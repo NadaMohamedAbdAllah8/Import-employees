@@ -5,91 +5,31 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\Auth\LoginRequest;
 use App\Http\Resources\Admin\AdminResource;
-use App\Models\Admin;
-use Illuminate\Http\Response;
-use Illuminate\Support\Facades\Auth as FacadesAuth;
-use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Str;
+use App\Services\Admin\AuthService;
+use App\Traits\GeneralResponseTrait;
 
 class AuthController extends Controller
 {
+    use GeneralResponseTrait;
+
+    public function __construct(private AuthService $auth_service)
+    {
+    }
 
     public function login(LoginRequest $request)
     {
-        DB::beginTransaction();
+        $credentials = $request->only('email', 'password');
 
-        try {
-            // get admin object
-            $admin = Admin::where('email', request()->email)->first();
+        $admin = $this->auth_service->login($credentials);
+        $this->auth_service->createToken($admin);
 
-            // do the passwords match?
-            if (!Hash::check(request()->password, $admin->password)) {
-                // no they don't
-                return response()->json(['error' => 'Unauthorized'], 401);
-            }
-
-            // log the admin in (needed for future requests)
-            FacadesAuth::login($admin);
-
-            if (!$admin->api_token) {
-                $admin->api_token = Str::random(80);
-            }
-
-            $admin->save();
-
-            DB::commit();
-
-            // return token in json response
-            return response()->json([
-                'code' => Response::HTTP_OK,
-                'message' => 'Logged in!',
-                'validation' => null,
-                'data' => [
-                    'admin' => new AdminResource($admin),
-                ],
-            ]);
-        } catch (\Exception $e) {
-            DB::rollback();
-
-            return response()->json([
-                'code' => Response::HTTP_INTERNAL_SERVER_ERROR,
-                'message' => 'Error!',
-                'validation' => null,
-                'data' => [],
-            ]);
-        }
-
+        return $this->returnData(['admin' => new AdminResource($admin)], 'User Logged in Successfully');
     }
 
     public function logout()
     {
-        DB::beginTransaction();
+        $this->auth_service->logout();
 
-        try {
-            $admin = auth('api')->user();
-
-            $admin->update(['api_token' => null]);
-
-            DB::commit();
-
-            // return token in json response
-            return response()->json([
-                'code' => Response::HTTP_OK,
-                'message' => 'Logged out!',
-                'validation' => null,
-                'data' => [],
-            ]);
-        } catch (\Exception $e) {
-            DB::rollback();
-
-            return response()->json([
-                'code' => Response::HTTP_INTERNAL_SERVER_ERROR,
-                'message' => 'Error!',
-                'validation' => null,
-                'data' => [],
-            ]);
-        }
-
+        return $this->returnSuccessMessage('User successfully signed out');
     }
 }
