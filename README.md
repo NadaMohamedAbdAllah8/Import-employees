@@ -2,7 +2,7 @@
 
 1. Install dependencies by running `composer install`.
 
-2. Create a `.env` file by copying the `.env.example` file and setting the database name and the `MAILER_LITE_API_KEY` variable value to use MailerLite services.
+2. Create a `.env` file by copying the `.env.example` file and setting the database.
 
 3. You can use the database export in \_SQL, or run the following two commands to migrate and seed the database:
 
