@@ -1,14 +1,13 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Traits;
 
-use App\Http\Controllers\Controller;
 use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Http\Exceptions\HttpResponseException;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Response;
 
-class BaseResponse extends Controller
+trait GeneralResponseTrait
 {
     public function returnSuccessMessage($message = ''): JsonResponse
     {

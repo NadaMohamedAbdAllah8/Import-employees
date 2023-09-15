@@ -2,14 +2,17 @@
 
 namespace App\Http\Controllers\Admin;
 
-use App\Http\Controllers\BaseResponse;
+use App\Http\Controllers\Controller;
 use App\Http\Resources\Admin\EmployeeResource;
 use App\Services\Admin\EmployeeService;
+use App\Traits\GeneralResponseTrait;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
-class EmployeeController extends BaseResponse
+class EmployeeController extends Controller
 {
+    use GeneralResponseTrait;
+
     public function __construct(private EmployeeService $employee_service)
     {
     }
