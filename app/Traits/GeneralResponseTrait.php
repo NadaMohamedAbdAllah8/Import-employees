@@ -25,7 +25,7 @@ trait GeneralResponseTrait
         ], $code);
     }
 
-    public function returnDate($value, $message): JsonResponse
+    public function returnData($value, $message): JsonResponse
     {
         return response()->json([
             'status' => true,
@@ -34,7 +34,7 @@ trait GeneralResponseTrait
         ], Response::HTTP_OK);
     }
 
-    public function returnErrorWithDate($value, $message, $validationCode, $code): JsonResponse
+    public function returnErrorWithData($value, $message, $validationCode, $code): JsonResponse
     {
         return response()->json([
             'status' => false,
