@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Admin\EmployeeController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -12,15 +13,15 @@ use Illuminate\Support\Facades\Route;
 | be assigned to the "api" middleware group. Make something great!
 |
  */
-
 Route::group(['prefix' => 'admin', 'namespace' => 'App\Http\Controllers\Admin'],
     function () {
 
         Route::post('login', 'AuthController@login');
 
-        // protected routes
         Route::group(['middleware' => ['auth:api', 'admin']], function () {
             Route::post('logout', 'AuthController@logout')->name('logout');
+
+            Route::apiResource('/employees', EmployeeController::class)->except(['store', 'update']);
         });
 
     });
