@@ -17,7 +17,7 @@ class PrefixFactory extends Factory
     public function definition(): array
     {
         return [
-            //
+            'prefix' => $this->faker->unique()->word,
         ];
     }
 }

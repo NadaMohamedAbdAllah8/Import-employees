@@ -2,7 +2,6 @@
 
 namespace Database\Factories;
 
-use App\Models\Prefix;
 use App\Models\ZipCode;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\Factory;
@@ -40,7 +39,7 @@ class EmployeeFactory extends Factory
             'place_name' => $this->faker->city,
             'date_of_joining' => $join_date,
             'age_in_company_in_years' => $age_in_company_in_years,
-            'prefix_id' => Prefix::factory()->create()->id,
+            // 'prefix_id' => Prefix::factory()->create()->id,
             'zip_code_id' => ZipCode::factory()->create()->id,
         ];
     }
