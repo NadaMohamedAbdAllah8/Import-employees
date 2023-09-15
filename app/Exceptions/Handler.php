@@ -27,4 +27,17 @@ class Handler extends ExceptionHandler
             //
         });
     }
+
+    /**
+     * Render the exception into an HTTP response.
+     *
+     * @return JsonResponse
+     */
+    public function render($request, Throwable $e)
+    {
+        if ($e instanceof ValidationException) {
+            return $e->render();
+        }
+        return parent::render($request, $e);
+    }
 }
