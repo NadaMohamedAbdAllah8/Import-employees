@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Admin\Employee\ImportRequest;
 use App\Http\Resources\Admin\EmployeeResource;
 use App\Models\Employee;
 use App\Services\Admin\EmployeeService;
@@ -53,6 +54,13 @@ class EmployeeController extends Controller
         $this->employee_service->deleteOne($employee);
 
         return $this->returnSuccessMessage('Deleted successfully');
+    }
+
+    public function import(ImportRequest $request)
+    {
+        $this->employee_service->import($request);
+
+        return $this->returnSuccessMessage('Imported successfully');
 
     }
 }

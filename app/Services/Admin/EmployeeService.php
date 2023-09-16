@@ -2,9 +2,11 @@
 
 namespace App\Services\Admin;
 
+use App\Imports\Admin\EmployeeImport;
 use App\Models\Employee;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Facades\DB;
+use Maatwebsite\Excel\Facades\Excel;
 
 class EmployeeService
 {
@@ -39,5 +41,19 @@ class EmployeeService
         return DB::transaction(function () use ($employee) {
             return $employee->delete();
         });
+    }
+
+    public function import($request): void
+    {
+        $file = $request->file('file');
+
+        $import = app()->make(EmployeeImport::class);
+
+        Excel::import($import, $file);
+
+        if ($import->failures()->isNotEmpty()) {
+            throw new \Exception('There were failures while importing the Product Age Groups.');
+        }
+
     }
 }
