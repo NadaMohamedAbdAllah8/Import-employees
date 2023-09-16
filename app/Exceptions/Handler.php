@@ -2,11 +2,16 @@
 
 namespace App\Exceptions;
 
+use App\Traits\GeneralResponseTrait;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
+use Illuminate\Http\Response;
 use Throwable;
 
 class Handler extends ExceptionHandler
 {
+    use GeneralResponseTrait;
+
     /**
      * The list of the inputs that are never flashed to the session on validation exceptions.
      *
@@ -37,7 +42,10 @@ class Handler extends ExceptionHandler
     {
         if ($e instanceof ValidationException) {
             return $e->render();
+        } else if ($e instanceof ModelNotFoundException) {
+            return $this->returnError($e->getMessage(), Response::HTTP_NOT_FOUND);
         }
+
         return parent::render($request, $e);
     }
 }

@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Http\Resources\Admin\EmployeeResource;
+use App\Models\Employee;
 use App\Services\Admin\EmployeeService;
 use App\Traits\GeneralResponseTrait;
 use Illuminate\Http\JsonResponse;
@@ -34,17 +35,24 @@ class EmployeeController extends Controller
 
     /**
      * Display the specified resource.
+     * @throws ModelNotFoundException
      */
-    public function show(string $id)
+    public function show(Employee $employee): JsonResponse
     {
-        //
+        return $this->returnData(
+            new EmployeeResource($employee),
+            'success'
+        );
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id)
+    public function destroy(Employee $employee): JsonResponse
     {
-        //
+        $this->employee_service->deleteOne($employee);
+
+        return $this->returnSuccessMessage('Deleted successfully');
+
     }
 }
