@@ -41,7 +41,7 @@ class EmployeeController extends Controller
     {
         return $this->returnData(
             new EmployeeResource($employee),
-            'success'
+            'Success'
         );
     }
 
