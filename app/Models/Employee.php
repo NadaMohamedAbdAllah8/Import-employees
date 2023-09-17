@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Enums\Gender;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -43,6 +44,15 @@ class Employee extends Model
     public function getTimeOfBirthAttribute($value)
     {
         return Carbon::createFromFormat('H:i:s', $value)->format('h:i:s A');
+    }
+
+    public function getGenderAttribute($value)
+    {
+        if ($value === Gender::FEMALE->value) {
+            return Gender::FEMALE->name;
+        } elseif ($value === Gender::MALE->value) {
+            return Gender::MALE->name;
+        }
     }
 
     public function prefix(): BelongsTo
