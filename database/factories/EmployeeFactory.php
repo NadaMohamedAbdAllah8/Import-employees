@@ -26,7 +26,7 @@ class EmployeeFactory extends Factory
         $age_in_company_in_years = $current_date->diffInYears($join_date);
 
         return [
-            'user_name' => $this->faker->unique()->userName,
+            'username' => $this->faker->unique()->userName,
             'first_name' => $this->faker->firstName,
             'last_name' => $this->faker->lastName,
             'middle_initial' => $this->faker->randomLetter,
