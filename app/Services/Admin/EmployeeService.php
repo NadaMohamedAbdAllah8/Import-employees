@@ -22,6 +22,15 @@ class EmployeeService
         });
     }
 
+    public function updateOneOrCreate($employee_id, $employee_data): ?Employee
+    {
+        return DB::transaction(function () use ($employee_id, $employee_data) {
+            return Employee::updateOrCreate([
+                'id' => $employee_id,
+            ], $employee_data)->fresh();
+        });
+    }
+
     public function getOne(int $id): ?Employee
     {
         $employee = Employee::findOrFail($id);
@@ -52,7 +61,7 @@ class EmployeeService
         Excel::import($import, $file);
 
         if ($import->failures()->isNotEmpty()) {
-            throw new \Exception('There were failures while importing the Product Age Groups.');
+            throw new \Exception('There were failures while importing employees.');
         }
 
     }
