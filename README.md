@@ -2,7 +2,7 @@
 
 1. Install dependencies by running `composer install`.
 
-2. Create a `.env` file by copying the `.env.example` file and setting the database. You can define IMPORT_CHUNK_SIZE in the .env file to set the imported chunk sizes. (There is a default value of 500 in case IMPORT_CHUNK_SIZE is not defined).
+2. Create a `.env` file by copying the `.env.example` file and setting the database. You can define IMPORT_CHUNK_SIZE, IMPORT_BATCH_SIZE in the .env file to set the read chunk sizes, the number of inserted rows at once in the database respectively.
 
 3. You can use following two commands to migrate and seed the database:
 
