@@ -92,8 +92,10 @@ class EmployeeService
 
                 $date_of_birth = $row[EmployeeHeader::DATE_OF_BIRTH_INDEX];
                 $date_of_joining = $row[EmployeeHeader::DATE_OF_JOINING_INDEX];
+                $time_of_birth = $row[EmployeeHeader::TIME_OF_BIRTH_INDEX];
 
                 $this->transformDates($date_of_birth, $date_of_joining, $row);
+                $this->transformTime($time_of_birth, $row);
 
                 EmployeeValidator::validateEmployee($row);
 
@@ -127,19 +129,30 @@ class EmployeeService
     {
         try {
             $date_of_birth = $row[EmployeeHeader::DATE_OF_BIRTH_INDEX];
-            if (preg_match('/^\d{2}-\d{2}-\d{2}$/', $date_of_birth)) {
+            if (is_string($date_of_birth) && preg_match('/^\d{2}-\d{2}-\d{2}$/', $date_of_birth)) {
                 $date_of_birth = Carbon::createFromFormat('d-m-y', $date_of_birth)->format('Y-m-d');
             }
             $date_of_birth = Carbon::parse($date_of_birth)->format('Y-m-d');
 
             $date_of_joining = $row[EmployeeHeader::DATE_OF_JOINING_INDEX];
-            if (preg_match('/^\d{2}-\d{2}-\d{2}$/', $date_of_joining)) {
+            if (is_string($date_of_joining) && preg_match('/^\d{2}-\d{2}-\d{2}$/', $date_of_joining)) {
                 $date_of_joining = Carbon::createFromFormat('d-m-y', $date_of_joining);
             }
             $date_of_joining = Carbon::parse($date_of_joining)->format('Y-m-d');
 
         } catch (Throwable $e) {
-            throw new ValidationException($e->getMessage());
+            throw new ValidationException($e->getMessage() . '143');
+        }
+    }
+
+    private function transformTime(&$time_of_birth, $row)
+    {
+        try {
+            $time_of_birth = $row[EmployeeHeader::TIME_OF_BIRTH_INDEX];
+            $time_of_birth = Carbon::parse($time_of_birth)->format('H:i:s');
+
+        } catch (Throwable $e) {
+            throw new ValidationException($e->getMessage() . '143');
         }
     }
 }
