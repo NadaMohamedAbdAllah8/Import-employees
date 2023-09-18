@@ -61,6 +61,13 @@ class EmployeeController extends Controller
         $this->employee_service->import($request);
 
         return $this->returnSuccessMessage('Imported successfully');
+    }
+
+    public function spatieImport(ImportRequest $request)
+    {
+        $this->employee_service->spatieImport($request);
+
+        return $this->returnSuccessMessage('Imported successfully');
 
     }
 }

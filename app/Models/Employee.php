@@ -51,10 +51,10 @@ class Employee extends Model
         $this->attributes['date_of_joining'] = Carbon::createFromTimestamp(strtotime($value))->toDateString();
     }
 
-    public function getTimeOfBirthAttribute($value)
-    {
-        return Carbon::createFromFormat('H:i:s', $value)->format('h:i:s A');
-    }
+    // public function getTimeOfBirthAttribute($value)
+    // {
+    //     return Carbon::createFromFormat('H:i:s', $value)->format('h:i:s A');
+    // }
 
     public function getGenderAttribute($value)
     {

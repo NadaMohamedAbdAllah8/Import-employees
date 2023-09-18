@@ -2,81 +2,61 @@
 
 namespace App\Imports\Admin;
 
-use App\Services\Admin\EmployeeService;
-use Illuminate\Support\Collection;
-use Maatwebsite\Excel\Concerns\Importable;
+use App\Models\Employee;
 use Maatwebsite\Excel\Concerns\SkipsErrors;
 use Maatwebsite\Excel\Concerns\SkipsFailures;
-use Maatwebsite\Excel\Concerns\ToCollection;
+use Maatwebsite\Excel\Concerns\ToModel;
 use Maatwebsite\Excel\Concerns\WithBatchInserts;
 use Maatwebsite\Excel\Concerns\WithChunkReading;
 use Maatwebsite\Excel\Concerns\WithHeadingRow;
+use Maatwebsite\Excel\Concerns\WithUpserts;
 use PhpOffice\PhpSpreadsheet\Shared\Date;
+use Throwable;
 
-class EmployeeImport implements ToCollection, WithHeadingRow, WithChunkReading, WithBatchInserts
+class EmployeeImport implements ToModel, WithHeadingRow, WithUpserts, WithChunkReading, WithBatchInserts
 {
-    use Importable, SkipsFailures, SkipsErrors;
-
-    public function __construct(private EmployeeService $employee_service
-    ) {
-    }
+    use SkipsFailures, SkipsErrors;
 
     /**
-     * A sample
+     * Defines the unique column in used by the upsert
+     * @return string The unique column
+     */
+    /**
+     * A sample of the imported document
      * Emp ID    Name Prefix    First Name    Middle Initial    Last Name    Gender    E Mail    Date of Birth    Time of Birth    Age in Yrs.    Date of Joining    Age in Company (Years)    Phone No.     Place Name    County    City    Zip    Region    User Name
      * 198429    Mrs.    Serafina    I    Bumgarner    F    serafina.bumgarner@exxonmobil.com    9/21/1982    1:53:14 AM    34.87    02-01-08    9.49    212-376-9125    Clymer    Chautauqua    Clymer    14724    Northeast    sibumgarner
      */
-    public function collection(Collection $collection)
+    public function model(array $row): Employee
     {
-        foreach ($collection as $row) {
-            $emp_id = $row['emp_id'];
-            $name_prefix = $row['name_prefix'];
-            $first_name = $row['first_name'];
-            $middle_initial = $row['middle_initial'];
-            $last_name = $row['last_name'];
-            $gender = $row['gender'];
-            $e_mail = $row['e_mail'];
-            $date_of_birth = $row['date_of_birth'];
-            $time_of_birth = $row['time_of_birth'];
-            $age_in_yrs = $row['age_in_yrs'];
-            $date_of_joining = $row['date_of_joining'];
-            $age_in_company_years = $row['age_in_company_years'];
-            $phone_no = $row['phone_no'];
-            $place_name = $row['place_name'];
-            $user_name = $row['user_name'];
-            $county = $row['county'];
-            $city = $row['city'];
-            $zip = $row['zip'];
-            $region = $row['region'];
-
-            $data = [
-                'first_name' => $first_name,
-                'middle_initial' => $middle_initial,
-                'last_name' => $last_name,
-                'gender' => $gender,
-                'email' => $e_mail,
-                'date_of_birth' => $date_of_birth,
-                'time_of_birth' => Date::excelToDateTimeObject($row['time_of_birth'])->format('H:i:s'),
-                'age_in_years' => $age_in_yrs,
-                'date_of_joining' => $date_of_joining,
-                'age_in_company_in_years' => $age_in_company_years,
-                'phone_number' => $phone_no,
-                'place_name' => $place_name,
-                'username' => $user_name,
-            ];
-
-            $this->employee_service->updateOneOrCreate($emp_id, $data);
+        try {
+            return new Employee([
+                'id' => $row['emp_id'],
+                'first_name' => $row['first_name'],
+                'middle_initial' => $row['middle_initial'],
+                'last_name' => $row['last_name'],
+                'gender' => $row['gender'],
+                'email' => $row['e_mail'],
+                'date_of_birth' => $row['date_of_birth'],
+                //'time_of_birth' => DateTime::createFromFormat('h:i:s A', $row['time_of_birth'])->format('H:i:s'),
+                // 'time_of_birth' => Date::excelToDateTimeObject($row['time_of_birth'])->format('H:i:s'),
+                'age_in_years' => $row['age_in_yrs'],
+                //'date_of_joining' => $row['date_of_joining'],
+                'age_in_company_in_years' => $row['age_in_company_years'],
+                'phone_number' => $row['phone_no'],
+                'place_name' => $row['place_name'],
+                'username' => $row['user_name'],
+            ]);} catch (Throwable $e) {
+            dump($row['emp_id'], $row['time_of_birth'], $e->getMessage(), $e->getTrace());
         }
     }
 
     /**
-     * Defines the chuck sizes of reading the imported file
-     *
-     * @return int The chunk size.
+     * Defines the unique column in used by the upsert
+     * @return string The unique column
      */
-    public function chunkSize(): int
+    public function uniqueBy(): string
     {
-        return env('IMPORT_CHUNK_SIZE', 500);
+        return 'id';
     }
 
     /**
@@ -87,5 +67,15 @@ class EmployeeImport implements ToCollection, WithHeadingRow, WithChunkReading, 
     public function batchSize(): int
     {
         return env('IMPORT_BATCH_SIZE', 500);
+    }
+
+    /**
+     * Defines the chuck sizes of reading the imported file
+     *
+     * @return int The chunk size.
+     */
+    public function chunkSize(): int
+    {
+        return env('IMPORT_CHUNK_SIZE', 500);
     }
 }

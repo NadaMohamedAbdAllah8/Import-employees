@@ -7,6 +7,8 @@ use App\Models\Employee;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Facades\DB;
 use Maatwebsite\Excel\Facades\Excel;
+use Spatie\SimpleExcel\SimpleExcelReader;
+use Throwable;
 
 class EmployeeService
 {
@@ -63,6 +65,53 @@ class EmployeeService
         if ($import->failures()->isNotEmpty()) {
             throw new \Exception('There were failures while importing employees.');
         }
+    }
+
+    public function spatieImport($request): void
+    {
+        $file = $request->file('file');
+
+        SimpleExcelReader::create($file, $file->getClientOriginalExtension())
+            ->getRows()
+            ->each(function (array $row) {
+                try {
+                    // dump($row['Time of Birth']);
+                    $emp_id = $row['Emp ID'];
+                    $first_name = $row['First Name'];
+                    $middle_initial = $row['Middle Initial'];
+                    $last_name = $row['Last Name'];
+                    $gender = $row['Gender'];
+                    $e_mail = $row['E Mail'];
+                    // $date_of_birth = Carbon::parse($row['Date of Birth'])->format('Y-m-d');
+                    // $time_of_birth = Carbon::parse($row['Time of Birth'])->format('H:i:s');
+                    $age_in_yrs = $row['Age in Yrs.'];
+                    // $date_of_joining = Carbon::parse($row['Date of Joining'])->format('Y-m-d');
+                    $age_in_company_years = $row['Age in Company (Years)'];
+                    $phone_no = $row['Phone No. '];
+                    $place_name = $row['Place Name'];
+                    $user_name = $row['User Name'];
+                } catch (Throwable $e) {
+                    dump($row['Emp ID'], $row['Date of Birth'], $e->getMessage(), $e->getTrace());
+                }
+
+                Employee::updateOrCreate(
+                    ['id' => $emp_id], [
+                        'first_name' => $first_name,
+                        'middle_initial' => $middle_initial,
+                        'last_name' => $last_name,
+                        'gender' => $gender,
+                        'email' => $e_mail,
+                        // 'date_of_birth' => $date_of_birth,
+                        // 'time_of_birth' => $time_of_birth,
+                        'age_in_years' => $age_in_yrs,
+                        // 'date_of_joining' => $date_of_joining,
+                        'age_in_company_in_years' => $age_in_company_years,
+                        'phone_number' => $phone_no,
+                        'place_name' => $place_name,
+                        'username' => $user_name,
+                    ]);
+
+            });
 
     }
 }
