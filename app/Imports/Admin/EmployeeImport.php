@@ -3,8 +3,11 @@
 namespace App\Imports\Admin;
 
 use App\Constants\EmployeeHeader;
+use App\Exceptions\ValidationException;
 use App\Models\Employee;
 use App\Validators\Admin\EmployeeValidator;
+use Carbon\Carbon;
+use DateTime;
 use Maatwebsite\Excel\Concerns\SkipsErrors;
 use Maatwebsite\Excel\Concerns\SkipsFailures;
 use Maatwebsite\Excel\Concerns\ToModel;
@@ -33,14 +36,21 @@ class EmployeeImport implements ToModel, WithStartRow, WithUpserts, WithChunkRea
         EmployeeValidator::validateEmployee($row);
 
         try {
-            if (is_string($row[EmployeeHeader::TIME_OF_BIRTH_INDEX])) {
-                $time_of_birth = $row[EmployeeHeader::TIME_OF_BIRTH_INDEX];
-            } else {
-                $time_of_birth = Date::excelToDateTimeObject($row[EmployeeHeader::TIME_OF_BIRTH_INDEX])->format('H:i:s');
-            }
+            // if (is_string($row[EmployeeHeader::TIME_OF_BIRTH_INDEX])) {
+            //     $time_of_birth = $row[EmployeeHeader::TIME_OF_BIRTH_INDEX];
+            // } else {
+            //     $time_of_birth = Date::excelToDateTimeObject($row[EmployeeHeader::TIME_OF_BIRTH_INDEX])->format('H:i:s');
+            // }
 
-            $date_of_birth = Date::excelToDateTimeObject($row[EmployeeHeader::DATE_OF_BIRTH_INDEX])->format('Y-m-d');
-            $date_of_joining = Date::excelToDateTimeObject($row[EmployeeHeader::DATE_OF_JOINING_INDEX])->format('Y-m-d');
+            // $date_of_birth = Date::excelToDateTimeObject($row[EmployeeHeader::DATE_OF_BIRTH_INDEX])->format('Y-m-d');
+            // $date_of_joining = Date::excelToDateTimeObject($row[EmployeeHeader::DATE_OF_JOINING_INDEX])->format('Y-m-d');
+
+            $date_of_birth = $row[EmployeeHeader::DATE_OF_BIRTH_INDEX];
+            $date_of_joining = $row[EmployeeHeader::DATE_OF_JOINING_INDEX];
+            $time_of_birth = $row[EmployeeHeader::TIME_OF_BIRTH_INDEX];
+
+            $this->transformDates($date_of_birth, $date_of_joining, $row);
+            $this->transformTime($time_of_birth, $row);
 
             return new Employee([
                 'id' => $row[EmployeeHeader::EMP_ID_INDEX],
@@ -59,11 +69,34 @@ class EmployeeImport implements ToModel, WithStartRow, WithUpserts, WithChunkRea
                 'username' => $row[EmployeeHeader::USER_NAME_INDEX],
             ]);
         } catch (Throwable $e) {
-            dump($row[EmployeeHeader::DATE_OF_BIRTH_INDEX]);
-            dump($row[EmployeeHeader::TIME_OF_BIRTH_INDEX]);
+            // dump($row[EmployeeHeader::DATE_OF_BIRTH_INDEX]);
+            // dump($row[EmployeeHeader::TIME_OF_BIRTH_INDEX]);
             dump($e->getMessage());
             dump($row[EmployeeHeader::EMP_ID_INDEX]);
             dump($e->getTrace());
+        }
+    }
+
+    private function transformDates(&$date_of_birth, &$date_of_joining, $row)
+    {
+        $date_of_birth = Carbon::createFromTimestamp(strtotime($date_of_birth))->toDateString();
+        // Date::excelToDateTimeObject($row[EmployeeHeader::DATE_OF_BIRTH_INDEX])->format('Y-m-d');
+        $date_of_joining = Carbon::createFromTimestamp(strtotime($date_of_joining))->toDateString();
+
+    }
+
+    private function transformTime(&$time_of_birth, $row)
+    {
+        if (!is_string($time_of_birth)) {
+            $time_of_birth = Date::excelToDateTimeObject($row[EmployeeHeader::TIME_OF_BIRTH_INDEX])->format('H:i:s');
+        } else {
+            $time_of_birth = DateTime::createFromFormat('g:i:s A', $time_of_birth);
+
+            if ($time_of_birth !== false) {
+                $time_of_birth = $time_of_birth->format('H:i:s');
+            } else {
+                throw new ValidationException("Failed to parse time!");
+            }
         }
     }
 
