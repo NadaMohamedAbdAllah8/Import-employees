@@ -22,7 +22,7 @@ return new class extends Migration
             $table->date('date_of_birth')->nullable();
             $table->time('time_of_birth')->nullable();
             $table->double('age_in_years', 5, 2)->nullable();
-            $table->string('phone_number')->nullable();
+            $table->string('phone_number')->unique()->nullable();
             $table->string('place_name')->nullable();
             $table->date('date_of_joining')->nullable();
             $table->double('age_in_company_in_years', 5, 2)->nullable();

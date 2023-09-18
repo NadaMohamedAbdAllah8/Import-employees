@@ -35,7 +35,7 @@ class EmployeeFactory extends Factory
             'date_of_birth' => $birth_date,
             'time_of_birth' => $this->faker->time(),
             'age_in_years' => $age_in_years,
-            'phone_number' => $this->faker->phoneNumber,
+            'phone_number' => $this->faker->unique()->phoneNumber,
             'place_name' => $this->faker->city,
             'date_of_joining' => $join_date,
             'age_in_company_in_years' => $age_in_company_in_years,
