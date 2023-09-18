@@ -6,7 +6,6 @@ use App\Constants\EmployeeHeader;
 use App\Enums\Gender;
 use App\Exceptions\ValidationException;
 use App\Models\Employee;
-use DateTime;
 
 class EmployeeValidator
 {
@@ -146,20 +145,5 @@ class EmployeeValidator
         }
 
         return $valid_characters && $unique;
-    }
-
-    private static function isValidTime($time)
-    {
-        $format = "h:i:s A";
-
-        $date_object = DateTime::createFromFormat($format, $time);
-        $errors = DateTime::getLastErrors();
-
-        if ($errors['error_count'] == 0) {
-            echo "Valid date format!";
-        } else {
-            echo "Invalid date format!";
-        }
-
     }
 }
