@@ -2,18 +2,20 @@
 
 namespace App\Imports\Admin;
 
+use App\Constants\EmployeeHeader;
 use App\Models\Employee;
+use App\Validators\Admin\EmployeeValidator;
 use Maatwebsite\Excel\Concerns\SkipsErrors;
 use Maatwebsite\Excel\Concerns\SkipsFailures;
 use Maatwebsite\Excel\Concerns\ToModel;
 use Maatwebsite\Excel\Concerns\WithBatchInserts;
 use Maatwebsite\Excel\Concerns\WithChunkReading;
-use Maatwebsite\Excel\Concerns\WithHeadingRow;
+use Maatwebsite\Excel\Concerns\WithStartRow;
 use Maatwebsite\Excel\Concerns\WithUpserts;
 use PhpOffice\PhpSpreadsheet\Shared\Date;
 use Throwable;
 
-class EmployeeImport implements ToModel, WithHeadingRow, WithUpserts, WithChunkReading, WithBatchInserts
+class EmployeeImport implements ToModel, WithStartRow, WithUpserts, WithChunkReading, WithBatchInserts
 {
     use SkipsFailures, SkipsErrors;
 
@@ -28,26 +30,49 @@ class EmployeeImport implements ToModel, WithHeadingRow, WithUpserts, WithChunkR
      */
     public function model(array $row): Employee
     {
+        EmployeeValidator::validateEmployee($row);
+
         try {
+            if (is_string($row[EmployeeHeader::TIME_OF_BIRTH_INDEX])) {
+                $time_of_birth = $row[EmployeeHeader::TIME_OF_BIRTH_INDEX];
+            } else {
+                $time_of_birth = Date::excelToDateTimeObject($row[EmployeeHeader::TIME_OF_BIRTH_INDEX])->format('H:i:s');
+            }
+
+            $date_of_birth = Date::excelToDateTimeObject($row[EmployeeHeader::DATE_OF_BIRTH_INDEX])->format('Y-m-d');
+            $date_of_joining = Date::excelToDateTimeObject($row[EmployeeHeader::DATE_OF_JOINING_INDEX])->format('Y-m-d');
+
             return new Employee([
-                'id' => $row['emp_id'],
-                'first_name' => $row['first_name'],
-                'middle_initial' => $row['middle_initial'],
-                'last_name' => $row['last_name'],
-                'gender' => $row['gender'],
-                'email' => $row['e_mail'],
-                'date_of_birth' => $row['date_of_birth'],
-                //'time_of_birth' => DateTime::createFromFormat('h:i:s A', $row['time_of_birth'])->format('H:i:s'),
-                // 'time_of_birth' => Date::excelToDateTimeObject($row['time_of_birth'])->format('H:i:s'),
-                'age_in_years' => $row['age_in_yrs'],
-                //'date_of_joining' => $row['date_of_joining'],
-                'age_in_company_in_years' => $row['age_in_company_years'],
-                'phone_number' => $row['phone_no'],
-                'place_name' => $row['place_name'],
-                'username' => $row['user_name'],
-            ]);} catch (Throwable $e) {
-            dump($row['emp_id'], $row['time_of_birth'], $e->getMessage(), $e->getTrace());
+                'id' => $row[EmployeeHeader::EMP_ID_INDEX],
+                'first_name' => $row[EmployeeHeader::FIRST_NAME_INDEX],
+                'middle_initial' => $row[EmployeeHeader::MIDDLE_INITIAL_INDEX],
+                'last_name' => $row[EmployeeHeader::LAST_NAME_INDEX],
+                'gender' => $row[EmployeeHeader::GENDER_INDEX],
+                'email' => $row[EmployeeHeader::E_MAIL_INDEX],
+                'date_of_birth' => $date_of_birth,
+                'time_of_birth' => $time_of_birth,
+                'age_in_years' => $row[EmployeeHeader::AGE_IN_YRS_INDEX],
+                'date_of_joining' => $date_of_joining,
+                'age_in_company_in_years' => $row[EmployeeHeader::AGE_IN_COMPANY_YEARS_INDEX],
+                'phone_number' => $row[EmployeeHeader::PHONE_NO_INDEX],
+                'place_name' => $row[EmployeeHeader::PLACE_NAME_INDEX],
+                'username' => $row[EmployeeHeader::USER_NAME_INDEX],
+            ]);
+        } catch (Throwable $e) {
+            dump($row[EmployeeHeader::DATE_OF_BIRTH_INDEX]);
+            dump($row[EmployeeHeader::TIME_OF_BIRTH_INDEX]);
+            dump($e->getMessage());
+            dump($row[EmployeeHeader::EMP_ID_INDEX]);
+            dump($e->getTrace());
         }
+    }
+
+    /**
+     * @return int
+     */
+    public function startRow(): int
+    {
+        return 2;
     }
 
     /**
@@ -66,7 +91,7 @@ class EmployeeImport implements ToModel, WithHeadingRow, WithUpserts, WithChunkR
      */
     public function batchSize(): int
     {
-        return env('IMPORT_BATCH_SIZE', 500);
+        return config('excel_custom.import.batch_size', 500);
     }
 
     /**
@@ -76,6 +101,6 @@ class EmployeeImport implements ToModel, WithHeadingRow, WithUpserts, WithChunkR
      */
     public function chunkSize(): int
     {
-        return env('IMPORT_CHUNK_SIZE', 500);
+        return config('excel_custom.import.chunk_size', 500);
     }
 }

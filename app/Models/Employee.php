@@ -41,20 +41,20 @@ class Employee extends Model
         'created_at' => 'datetime:Y-m-d',
     ];
 
-    public function setDateOfBirthAttribute($value)
-    {
-        $this->attributes['date_of_birth'] = Carbon::createFromTimestamp(strtotime($value))->toDateString();
-    }
-
-    public function setDateOfJoiningAttribute($value)
-    {
-        $this->attributes['date_of_joining'] = Carbon::createFromTimestamp(strtotime($value))->toDateString();
-    }
-
-    // public function getTimeOfBirthAttribute($value)
+    // public function setDateOfBirthAttribute($value)
     // {
-    //     return Carbon::createFromFormat('H:i:s', $value)->format('h:i:s A');
+    //     $this->attributes['date_of_birth'] = Carbon::createFromTimestamp(strtotime($value))->toDateString();
     // }
+
+    // public function setDateOfJoiningAttribute($value)
+    // {
+    //     $this->attributes['date_of_joining'] = Carbon::createFromTimestamp(strtotime($value))->toDateString();
+    // }
+
+    public function getTimeOfBirthAttribute($value)
+    {
+        $this->attributes['time_of_birth'] = Carbon::createFromFormat(strtotime($value))->format('h:i:s A');
+    }
 
     public function getGenderAttribute($value)
     {
