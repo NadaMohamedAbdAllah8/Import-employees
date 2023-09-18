@@ -3,7 +3,7 @@
 namespace App\Imports\Admin;
 
 use App\Constants\EmployeeHeader;
-use App\Exceptions\ValidationException;
+use App\Exceptions\ParsingException;
 use App\Models\Employee;
 use App\Validators\Admin\EmployeeValidator;
 use Carbon\Carbon;
@@ -79,10 +79,12 @@ class EmployeeImport implements ToModel, WithStartRow, WithUpserts, WithChunkRea
 
     private function transformDates(&$date_of_birth, &$date_of_joining, $row)
     {
-        $date_of_birth = Carbon::createFromTimestamp(strtotime($date_of_birth))->toDateString();
-        // Date::excelToDateTimeObject($row[EmployeeHeader::DATE_OF_BIRTH_INDEX])->format('Y-m-d');
-        $date_of_joining = Carbon::createFromTimestamp(strtotime($date_of_joining))->toDateString();
-
+        try {
+            $date_of_birth = Carbon::createFromTimestamp(strtotime($date_of_birth))->toDateString();
+            $date_of_joining = Carbon::createFromTimestamp(strtotime($date_of_joining))->toDateString();
+        } catch (Throwable $e) {
+            throw new ParsingException('Transforming dates valid, ' . $e->getMessage());
+        }
     }
 
     private function transformTime(&$time_of_birth, $row)
@@ -95,7 +97,7 @@ class EmployeeImport implements ToModel, WithStartRow, WithUpserts, WithChunkRea
             if ($time_of_birth !== false) {
                 $time_of_birth = $time_of_birth->format('H:i:s');
             } else {
-                throw new ValidationException("Failed to parse time!");
+                throw new ParsingException("Failed to parse time!");
             }
         }
     }

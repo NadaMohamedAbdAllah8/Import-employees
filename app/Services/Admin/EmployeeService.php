@@ -3,7 +3,7 @@
 namespace App\Services\Admin;
 
 use App\Constants\EmployeeHeader;
-use App\Exceptions\ValidationException;
+use App\Exceptions\ParsingException;
 use App\Imports\Admin\EmployeeImport;
 use App\Models\Employee;
 use App\Validators\Admin\EmployeeValidator;
@@ -141,7 +141,7 @@ class EmployeeService
             $date_of_joining = Carbon::parse($date_of_joining)->format('Y-m-d');
 
         } catch (Throwable $e) {
-            throw new ValidationException($e->getMessage() . '143');
+            throw new ParsingException('Transforming dates valid, ' . $e->getMessage());
         }
     }
 
@@ -152,7 +152,7 @@ class EmployeeService
             $time_of_birth = Carbon::parse($time_of_birth)->format('H:i:s');
 
         } catch (Throwable $e) {
-            throw new ValidationException($e->getMessage() . '143');
+            throw new ParsingException('Transforming time failed, ' . $e->getMessage());
         }
     }
 }

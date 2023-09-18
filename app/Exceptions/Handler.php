@@ -44,8 +44,9 @@ class Handler extends ExceptionHandler
             return $e->render();
         } else if ($e instanceof ModelNotFoundException) {
             return $this->returnError($e->getMessage(), Response::HTTP_NOT_FOUND);
+        } else if ($e instanceof ParsingException) {
+            return $e->render();
         }
-
         return parent::render($request, $e);
     }
 }
