@@ -3,31 +3,25 @@
 namespace App\Imports\Admin;
 
 use App\Constants\EmployeeHeader;
-use App\Exceptions\ParsingException;
 use App\Models\Employee;
 use App\Models\Prefix;
 use App\Services\Admin\EmployeeImportService;
 use App\Validators\Admin\EmployeeValidator;
-use Carbon\Carbon;
-use DateTime;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Support\Facades\Log;
 use Maatwebsite\Excel\Concerns\SkipsErrors;
 use Maatwebsite\Excel\Concerns\SkipsFailures;
 use Maatwebsite\Excel\Concerns\ToModel;
+use Maatwebsite\Excel\Concerns\WithBatchInserts;
 use Maatwebsite\Excel\Concerns\WithChunkReading;
 use Maatwebsite\Excel\Concerns\WithStartRow;
 use Maatwebsite\Excel\Concerns\WithUpserts;
 use PhpOffice\PhpSpreadsheet\Shared\Date;
 use Throwable;
 
-class EmployeeImport implements ToModel, WithStartRow, WithUpserts,
-WithChunkReading
-//, WithBatchInserts
-, ShouldQueue
+class EmployeeImport implements ToModel, WithStartRow, WithUpserts, WithChunkReading, WithBatchInserts, ShouldQueue
 {
     use SkipsFailures, SkipsErrors;
-    //use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
     public function __construct(private EmployeeImportService $import_service)
     {
@@ -35,20 +29,24 @@ WithChunkReading
 
     /**
      * A sample of the imported document
-     * Emp ID    Name Prefix    First Name    Middle Initial    Last Name    Gender    E Mail    Date of Birth    Time of Birth    Age in Yrs.    Date of Joining    Age in Company (Years)    Phone No.     Place Name    County    City    Zip    Region    User Name
-     * 198429    Mrs.    Serafina    I    Bumgarner    F    serafina.bumgarner@exxonmobil.com    9/21/1982    1:53:14 AM    34.87    02-01-08    9.49    212-376-9125    Clymer    Chautauqua    Clymer    14724    Northeast    sibumgarner
+     * Emp ID  Name Prefix  First Name  Middle Initial  Last Name  Gender  E Mail
+     * 198429 Mrs.        Serafina       I              Bumgarner   F      serafina.bumgarner@exxonmobil.com
+     * Date of Birth  Time of Birth  Age in Yrs.  Date of Joining  Age in Company (Years)
+     * 9/21/1982     1:53:14 AM     34.87         02-01-08         9.49
+     * Phone No.       Place Name  County        City      Zip    Region      User Name
+     * 212-376-9125    Clymer      Chautauqua    Clymer    14724  Northeast   sibumgarner
+     * @throws ValidationException, ParsingException
      */
-    public function model(array $row): Employee
+    public function model(array $row)
     {
-        EmployeeValidator::validateEmployee($row);
-
         try {
-            $date_of_birth = $row[EmployeeHeader::DATE_OF_BIRTH_INDEX];
-            $date_of_joining = $row[EmployeeHeader::DATE_OF_JOINING_INDEX];
-            $time_of_birth = $row[EmployeeHeader::TIME_OF_BIRTH_INDEX];
+            $emp_id = $row[EmployeeHeader::EMP_ID_INDEX];
 
-            $this->transformDates($date_of_birth, $date_of_joining, $row);
-            $this->transformTime($time_of_birth, $row);
+            EmployeeValidator::validateEmployee($row);
+
+            $date_of_birth = $this->import_service->transformDate($row[EmployeeHeader::DATE_OF_BIRTH_INDEX]);
+            $date_of_joining = $this->import_service->transformDate($row[EmployeeHeader::DATE_OF_JOINING_INDEX]);
+            $time_of_birth = $this->import_service->transformTime($row[EmployeeHeader::TIME_OF_BIRTH_INDEX]);
 
             $prefix_id = $this->firstOrCreatePrefix($row[EmployeeHeader::NAME_PREFIX_INDEX])->id;
 
@@ -58,7 +56,7 @@ WithChunkReading
             $zip_code_id = $this->import_service->firstOrCreateZipCode($row[EmployeeHeader::ZIP_INDEX], $city_id)->id;
 
             return new Employee([
-                'id' => $row[EmployeeHeader::EMP_ID_INDEX],
+                'id' => $emp_id,
                 'first_name' => $row[EmployeeHeader::FIRST_NAME_INDEX],
                 'middle_initial' => $row[EmployeeHeader::MIDDLE_INITIAL_INDEX],
                 'last_name' => $row[EmployeeHeader::LAST_NAME_INDEX],
@@ -76,13 +74,7 @@ WithChunkReading
                 'zip_code_id' => $zip_code_id,
             ]);
         } catch (Throwable $e) {
-            Log::info('in catch');
-
-            // dump($row[EmployeeHeader::DATE_OF_BIRTH_INDEX]);
-            // dump($row[EmployeeHeader::TIME_OF_BIRTH_INDEX]);
-            // dump($e->getMessage());
-            // dump($row[EmployeeHeader::EMP_ID_INDEX]);
-            // dump($e->getTrace());
+            Log::error('Error happened for ' . $emp_id . ' ,error: ' . $e->getMessage());
         }
     }
 
@@ -91,44 +83,6 @@ WithChunkReading
         return Prefix::firstOrCreate([
             'prefix' => $prefix,
         ]);
-    }
-
-    private function transformDates(&$date_of_birth, &$date_of_joining, $row)
-    {
-        try {
-            if (is_string($date_of_birth) && preg_match('/^\d{2}-\d{2}-\d{2}$/', $date_of_birth)) {
-                $date_of_birth = Carbon::createFromFormat('d-m-y', $date_of_birth)->format('Y-m-d');
-                $date_of_birth = Carbon::parse($date_of_birth)->format('Y-m-d');
-
-            } else {
-                $date_of_birth = Carbon::createFromTimestamp(strtotime($date_of_birth))->toDateString();
-            }
-
-            if (is_string($date_of_joining) && preg_match('/^\d{2}-\d{2}-\d{2}$/', $date_of_joining)) {
-                $date_of_joining = Carbon::createFromFormat('d-m-y', $date_of_joining)->format('Y-m-d');
-                $date_of_joining = Carbon::parse($date_of_joining)->format('Y-m-d');
-
-            } else {
-                $date_of_joining = Carbon::createFromTimestamp(strtotime($date_of_birth))->toDateString();
-            }
-        } catch (Throwable $e) {
-            throw new ParsingException('Transforming dates valid, ' . $e->getMessage());
-        }
-    }
-
-    private function transformTime(&$time_of_birth, $row)
-    {
-        if (!is_string($time_of_birth)) {
-            $time_of_birth = Date::excelToDateTimeObject($row[EmployeeHeader::TIME_OF_BIRTH_INDEX])->format('H:i:s');
-        } else {
-            $time_of_birth = DateTime::createFromFormat('g:i:s A', $time_of_birth);
-
-            if ($time_of_birth !== false) {
-                $time_of_birth = $time_of_birth->format('H:i:s');
-            } else {
-                throw new ParsingException("Failed to parse time!");
-            }
-        }
     }
 
     /**

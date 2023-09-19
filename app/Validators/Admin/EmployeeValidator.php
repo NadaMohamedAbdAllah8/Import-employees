@@ -15,74 +15,66 @@ class EmployeeValidator
      */
     public static function validateEmployee($row): void
     {
-        // dump($row[EmployeeHeader::EMP_ID_INDEX]);
-        // dump(is_int($row[EmployeeHeader::EMP_ID_INDEX]));
-        // dump(is_int($row[EmployeeHeader::EMP_ID_INDEX]));
         if (filter_var($row[EmployeeHeader::EMP_ID_INDEX], FILTER_VALIDATE_INT) === false) {
-            throw new ValidationException('Employee id is not a valid integer. For ' . $row[EmployeeHeader::EMP_ID_INDEX]);
+            throw new ValidationException('Employee id is not a valid integer');
         }
 
         if (!is_string($row[EmployeeHeader::FIRST_NAME_INDEX])) {
-            throw new ValidationException('First name is not a valid string. For ' . $row[EmployeeHeader::EMP_ID_INDEX]);
+            throw new ValidationException('First name is not a valid string');
         }
 
         if (!is_string($row[EmployeeHeader::LAST_NAME_INDEX])) {
-            throw new ValidationException('Last name is not a valid string. For ' . $row[EmployeeHeader::EMP_ID_INDEX]);
+            throw new ValidationException('Last name is not a valid string');
         }
 
         if (strlen($row[EmployeeHeader::MIDDLE_INITIAL_INDEX]) > 1) {
-            throw new ValidationException('Initial is not valid. For ' . $row[EmployeeHeader::EMP_ID_INDEX]);
+            throw new ValidationException('Initial is not valid');
         }
 
         if (!self::isValidGender($row[EmployeeHeader::GENDER_INDEX])) {
             throw new ValidationException('Gender is not valid. It has to be '
-                . Gender::FEMALE->value . ', or ' . Gender::MALE->value . '. For ' . $row[EmployeeHeader::EMP_ID_INDEX]
+                . Gender::FEMALE->value . ', or ' . Gender::MALE->value . ''
             );
         }
 
         if (!self::isValidEmail($row[EmployeeHeader::E_MAIL_INDEX], $row[EmployeeHeader::EMP_ID_INDEX])) {
-            throw new ValidationException('Email is not valid. For ' . $row[EmployeeHeader::EMP_ID_INDEX]);
+            throw new ValidationException('Email is not valid');
         }
 
         if (!is_numeric($row[EmployeeHeader::AGE_IN_COMPANY_YEARS_INDEX])) {
-            throw new ValidationException('Age in company is not valid. For ' . $row[EmployeeHeader::EMP_ID_INDEX]);
+            throw new ValidationException('Age in company is not valid');
         }
 
         if (!is_numeric($row[EmployeeHeader::AGE_IN_YRS_INDEX])) {
-            throw new ValidationException('Age in years is not valid. For ' . $row[EmployeeHeader::EMP_ID_INDEX]);
+            throw new ValidationException('Age in years is not valid');
         }
 
-        // if (!(strtotime($row[EmployeeHeader::TIME_OF_BIRTH_INDEX]))) {
-        //     dump($row[EmployeeHeader::TIME_OF_BIRTH_INDEX]);
-        //     throw new ValidationException('Time of birth is not valid. For ' . $row[EmployeeHeader::EMP_ID_INDEX]);
-        // }
-
         if (!self::isValidPhoneNumber($row[EmployeeHeader::PHONE_NO_INDEX], $row[EmployeeHeader::EMP_ID_INDEX])) {
-            throw new ValidationException('Phone number is not valid. For ' . $row[EmployeeHeader::EMP_ID_INDEX]);
+            throw new ValidationException('Phone number is not valid');
         }
 
         if (!is_string($row[EmployeeHeader::PLACE_NAME_INDEX])) {
-            throw new ValidationException('Place name is not a valid string. For ' . $row[EmployeeHeader::EMP_ID_INDEX]);
+            throw new ValidationException('Place name is not a valid string');
         }
 
         if (!is_string($row[EmployeeHeader::REGION_INDEX])) {
-            throw new ValidationException('Region is not a valid string. For ' . $row[EmployeeHeader::EMP_ID_INDEX]);
+            throw new ValidationException('Region is not a valid string');
         }
 
         if (!is_string($row[EmployeeHeader::CITY_INDEX])) {
-            throw new ValidationException('City is not a valid string. For ' . $row[EmployeeHeader::EMP_ID_INDEX]);
+            throw new ValidationException('City is not a valid string');
         }
 
         if (!is_string($row[EmployeeHeader::COUNTY_INDEX])) {
-            throw new ValidationException('County is not a valid string. For ' . $row[EmployeeHeader::EMP_ID_INDEX]);
+            throw new ValidationException('County is not a valid string');
         }
 
         if (filter_var($row[EmployeeHeader::ZIP_INDEX], FILTER_VALIDATE_INT) === false) {
-            throw new ValidationException('Zip code is not a valid number. For ' . $row[EmployeeHeader::EMP_ID_INDEX]);
+            throw new ValidationException('Zip code is not a valid number');
         }
 
         if (!self::isValidUsername($row[EmployeeHeader::USER_NAME_INDEX], $row[EmployeeHeader::EMP_ID_INDEX])) {
-            throw new ValidationException('User name not valid. For ' . $row[EmployeeHeader::EMP_ID_INDEX]);
+            throw new ValidationException('User name not valid');
         }
     }
 
