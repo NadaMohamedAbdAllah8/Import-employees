@@ -14,16 +14,17 @@ use Illuminate\Support\Facades\Route;
 | be assigned to the "api" middleware group. Make something great!
 |
  */
+Route::post('/employee', [EmployeeController::class, 'import']);
+
 Route::group(['prefix' => 'admin', 'namespace' => 'App\Http\Controllers\Admin'],
     function () {
-
         Route::post('login', [AuthController::class, 'login']);
 
         Route::group(['middleware' => ['auth:api', 'admin']], function () {
             Route::post('logout', [AuthController::class, 'logout']);
 
-            Route::apiResource('/employees', EmployeeController::class)->except(['store', 'update']);
-            Route::post('/employees/import', [EmployeeController::class, 'import']);
+            Route::apiResource('/employee', EmployeeController::class)
+                ->except(['store', 'update']);
         });
 
     });
