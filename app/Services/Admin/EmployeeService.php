@@ -15,34 +15,11 @@ class EmployeeService
         return Employee::orderBy('id')->paginate($paginate);
     }
 
-    public function createOne($employee_data): ?Employee
-    {
-        return DB::transaction(function () use ($employee_data) {
-            return Employee::create($employee_data)->fresh();
-        });
-    }
-
-    public function updateOrCreateOne($employee_id, $employee_data): ?Employee
-    {
-        return DB::transaction(function () use ($employee_id, $employee_data) {
-            return Employee::updateOrCreate([
-                'id' => $employee_id,
-            ], $employee_data)->fresh();
-        });
-    }
-
     public function getOne(int $id): ?Employee
     {
         $employee = Employee::findOrFail($id);
 
         return $employee;
-    }
-
-    public function updateOne($employee_data, Employee $employee): Employee
-    {
-        return DB::transaction(function () use ($employee, $employee_data) {
-            return tap($employee)->update($employee_data);
-        });
     }
 
     public function deleteOne(Employee $employee): bool
