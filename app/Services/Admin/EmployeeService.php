@@ -28,7 +28,7 @@ class EmployeeService
         });
     }
 
-    public function updateOneOrCreate($employee_id, $employee_data): ?Employee
+    public function updateOrCreateOne($employee_id, $employee_data): ?Employee
     {
         return DB::transaction(function () use ($employee_id, $employee_data) {
             return Employee::updateOrCreate([
@@ -118,7 +118,7 @@ class EmployeeService
                     'username' => $row[EmployeeHeader::USER_NAME_INDEX],
                 ];
 
-                $this->updateOneOrCreate($emp_id, $data);
+                $this->updateOrCreateOne($emp_id, $data);
             });
 
         $duration = now()->diffInSeconds($start);
