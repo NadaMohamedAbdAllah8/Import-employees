@@ -5,28 +5,34 @@ namespace App\Imports\Admin;
 use App\Constants\EmployeeHeader;
 use App\Exceptions\ParsingException;
 use App\Models\Employee;
+use App\Models\Prefix;
+use App\Services\Admin\EmployeeImportService;
 use App\Validators\Admin\EmployeeValidator;
 use Carbon\Carbon;
 use DateTime;
 use Illuminate\Contracts\Queue\ShouldQueue;
+use Illuminate\Support\Facades\Log;
 use Maatwebsite\Excel\Concerns\SkipsErrors;
 use Maatwebsite\Excel\Concerns\SkipsFailures;
 use Maatwebsite\Excel\Concerns\ToModel;
-use Maatwebsite\Excel\Concerns\WithBatchInserts;
 use Maatwebsite\Excel\Concerns\WithChunkReading;
 use Maatwebsite\Excel\Concerns\WithStartRow;
 use Maatwebsite\Excel\Concerns\WithUpserts;
 use PhpOffice\PhpSpreadsheet\Shared\Date;
 use Throwable;
 
-class EmployeeImport implements ToModel, WithStartRow, WithUpserts, WithChunkReading, WithBatchInserts, ShouldQueue
+class EmployeeImport implements ToModel, WithStartRow, WithUpserts,
+WithChunkReading
+//, WithBatchInserts
+, ShouldQueue
 {
     use SkipsFailures, SkipsErrors;
+    //use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
-    /**
-     * Defines the unique column in used by the upsert
-     * @return string The unique column
-     */
+    public function __construct(private EmployeeImportService $import_service)
+    {
+    }
+
     /**
      * A sample of the imported document
      * Emp ID    Name Prefix    First Name    Middle Initial    Last Name    Gender    E Mail    Date of Birth    Time of Birth    Age in Yrs.    Date of Joining    Age in Company (Years)    Phone No.     Place Name    County    City    Zip    Region    User Name
@@ -37,21 +43,19 @@ class EmployeeImport implements ToModel, WithStartRow, WithUpserts, WithChunkRea
         EmployeeValidator::validateEmployee($row);
 
         try {
-            // if (is_string($row[EmployeeHeader::TIME_OF_BIRTH_INDEX])) {
-            //     $time_of_birth = $row[EmployeeHeader::TIME_OF_BIRTH_INDEX];
-            // } else {
-            //     $time_of_birth = Date::excelToDateTimeObject($row[EmployeeHeader::TIME_OF_BIRTH_INDEX])->format('H:i:s');
-            // }
-
-            // $date_of_birth = Date::excelToDateTimeObject($row[EmployeeHeader::DATE_OF_BIRTH_INDEX])->format('Y-m-d');
-            // $date_of_joining = Date::excelToDateTimeObject($row[EmployeeHeader::DATE_OF_JOINING_INDEX])->format('Y-m-d');
-
             $date_of_birth = $row[EmployeeHeader::DATE_OF_BIRTH_INDEX];
             $date_of_joining = $row[EmployeeHeader::DATE_OF_JOINING_INDEX];
             $time_of_birth = $row[EmployeeHeader::TIME_OF_BIRTH_INDEX];
 
             $this->transformDates($date_of_birth, $date_of_joining, $row);
             $this->transformTime($time_of_birth, $row);
+
+            $prefix_id = $this->firstOrCreatePrefix($row[EmployeeHeader::NAME_PREFIX_INDEX])->id;
+
+            $region_id = $this->import_service->firstOrCreateRegion($row[EmployeeHeader::REGION_INDEX])->id;
+            $county_id = $this->import_service->firstOrCreateCounty($row[EmployeeHeader::COUNTY_INDEX], $region_id)->id;
+            $city_id = $this->import_service->firstOrCreateCity($row[EmployeeHeader::CITY_INDEX], $county_id)->id;
+            $zip_code_id = $this->import_service->firstOrCreateZipCode($row[EmployeeHeader::ZIP_INDEX], $city_id)->id;
 
             return new Employee([
                 'id' => $row[EmployeeHeader::EMP_ID_INDEX],
@@ -68,14 +72,25 @@ class EmployeeImport implements ToModel, WithStartRow, WithUpserts, WithChunkRea
                 'phone_number' => $row[EmployeeHeader::PHONE_NO_INDEX],
                 'place_name' => $row[EmployeeHeader::PLACE_NAME_INDEX],
                 'username' => $row[EmployeeHeader::USER_NAME_INDEX],
+                'prefix_id' => $prefix_id,
+                'zip_code_id' => $zip_code_id,
             ]);
         } catch (Throwable $e) {
+            Log::info('in catch');
+
             // dump($row[EmployeeHeader::DATE_OF_BIRTH_INDEX]);
             // dump($row[EmployeeHeader::TIME_OF_BIRTH_INDEX]);
-            dump($e->getMessage());
-            dump($row[EmployeeHeader::EMP_ID_INDEX]);
-            dump($e->getTrace());
+            // dump($e->getMessage());
+            // dump($row[EmployeeHeader::EMP_ID_INDEX]);
+            // dump($e->getTrace());
         }
+    }
+
+    public function firstOrCreatePrefix($prefix): Prefix
+    {
+        return Prefix::firstOrCreate([
+            'prefix' => $prefix,
+        ]);
     }
 
     private function transformDates(&$date_of_birth, &$date_of_joining, $row)

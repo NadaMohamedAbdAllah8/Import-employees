@@ -11,7 +11,7 @@ return [
     | API, giving you convenient access to each back-end using the same
     | syntax for every one. Here you may define a default connection.
     |
-    */
+     */
 
     'default' => env('QUEUE_CONNECTION', 'sync'),
 
@@ -26,7 +26,7 @@ return [
     |
     | Drivers: "sync", "database", "beanstalkd", "sqs", "redis", "null"
     |
-    */
+     */
 
     'connections' => [
 
@@ -39,7 +39,10 @@ return [
             'table' => 'jobs',
             'queue' => 'default',
             'retry_after' => 90,
-            'after_commit' => false,
+            // Laravel will wait until the open parent database transactions have been committed
+            // before actually dispatching the job. Of course, if no database transactions
+            // are currently open, the job will be dispatched immediately.
+            'after_commit' => true,
         ],
 
         'beanstalkd' => [
@@ -82,7 +85,7 @@ return [
     | batching information. These options can be updated to any database
     | connection and table which has been defined by your application.
     |
-    */
+     */
 
     'batching' => [
         'database' => env('DB_CONNECTION', 'mysql'),
@@ -98,7 +101,7 @@ return [
     | can control which database and table are used to store the jobs that
     | have failed. You may change them to any database / table you wish.
     |
-    */
+     */
 
     'failed' => [
         'driver' => env('QUEUE_FAILED_DRIVER', 'database-uuids'),
