@@ -54,8 +54,6 @@ class EmployeeService
 
     public function import($request): void
     {
-        $start = now();
-
         $file = $request->file('file');
 
         $import = app()->make(EmployeeImport::class);
@@ -65,8 +63,5 @@ class EmployeeService
         if ($import->failures()->isNotEmpty()) {
             throw new \Exception('There were failures while importing employees.');
         }
-
-        $duration = now()->diffInSeconds($start);
-        echo "Execution time: $duration seconds";
     }
 }
