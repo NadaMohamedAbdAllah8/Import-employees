@@ -57,6 +57,9 @@ class EmployeeController extends Controller
         return $this->returnSuccessMessage('Deleted successfully');
     }
 
+    /**
+     * Imports employee data from a file.
+     */
     public function import(ImportRequest $request)
     {
         $this->employee_service->import($request);

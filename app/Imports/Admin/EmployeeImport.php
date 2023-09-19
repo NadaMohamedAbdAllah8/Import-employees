@@ -4,7 +4,6 @@ namespace App\Imports\Admin;
 
 use App\Constants\EmployeeHeader;
 use App\Models\Employee;
-use App\Models\Prefix;
 use App\Services\Admin\EmployeeImportService;
 use App\Validators\Admin\EmployeeValidator;
 use Illuminate\Contracts\Queue\ShouldQueue;
@@ -35,7 +34,7 @@ class EmployeeImport implements ShouldQueue, ToModel, WithBatchInserts, WithChun
      * Phone No.       Place Name  County        City      Zip    Region      User Name
      * 212-376-9125    Clymer      Chautauqua    Clymer    14724  Northeast   sibumgarner
      *
-     * @throws ValidationException, ParsingException
+     * @throws ValidationException|ParsingException
      */
     public function model(array $row)
     {
@@ -75,7 +74,7 @@ class EmployeeImport implements ShouldQueue, ToModel, WithBatchInserts, WithChun
                 'zip_code_id' => $zip_code_id,
             ]);
         } catch (Throwable $e) {
-            Log::error('Error happened for '.$emp_id.' ,error: '.$e->getMessage());
+            Log::error('Error happened for ' . $emp_id . ' ,error: ' . $e->getMessage());
         }
     }
 
