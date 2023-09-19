@@ -8,6 +8,7 @@ use App\Models\Employee;
 use App\Validators\Admin\EmployeeValidator;
 use Carbon\Carbon;
 use DateTime;
+use Illuminate\Contracts\Queue\ShouldQueue;
 use Maatwebsite\Excel\Concerns\SkipsErrors;
 use Maatwebsite\Excel\Concerns\SkipsFailures;
 use Maatwebsite\Excel\Concerns\ToModel;
@@ -18,7 +19,7 @@ use Maatwebsite\Excel\Concerns\WithUpserts;
 use PhpOffice\PhpSpreadsheet\Shared\Date;
 use Throwable;
 
-class EmployeeImport implements ToModel, WithStartRow, WithUpserts, WithChunkReading, WithBatchInserts
+class EmployeeImport implements ToModel, WithStartRow, WithUpserts, WithChunkReading, WithBatchInserts, ShouldQueue
 {
     use SkipsFailures, SkipsErrors;
 
@@ -80,8 +81,21 @@ class EmployeeImport implements ToModel, WithStartRow, WithUpserts, WithChunkRea
     private function transformDates(&$date_of_birth, &$date_of_joining, $row)
     {
         try {
-            $date_of_birth = Carbon::createFromTimestamp(strtotime($date_of_birth))->toDateString();
-            $date_of_joining = Carbon::createFromTimestamp(strtotime($date_of_joining))->toDateString();
+            if (is_string($date_of_birth) && preg_match('/^\d{2}-\d{2}-\d{2}$/', $date_of_birth)) {
+                $date_of_birth = Carbon::createFromFormat('d-m-y', $date_of_birth)->format('Y-m-d');
+                $date_of_birth = Carbon::parse($date_of_birth)->format('Y-m-d');
+
+            } else {
+                $date_of_birth = Carbon::createFromTimestamp(strtotime($date_of_birth))->toDateString();
+            }
+
+            if (is_string($date_of_joining) && preg_match('/^\d{2}-\d{2}-\d{2}$/', $date_of_joining)) {
+                $date_of_joining = Carbon::createFromFormat('d-m-y', $date_of_joining)->format('Y-m-d');
+                $date_of_joining = Carbon::parse($date_of_joining)->format('Y-m-d');
+
+            } else {
+                $date_of_joining = Carbon::createFromTimestamp(strtotime($date_of_birth))->toDateString();
+            }
         } catch (Throwable $e) {
             throw new ParsingException('Transforming dates valid, ' . $e->getMessage());
         }
