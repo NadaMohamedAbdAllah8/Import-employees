@@ -13,8 +13,6 @@ class ParsingException extends Exception
 
     /**
      * Render the exception into an HTTP response.
-     *
-     * @return JsonResponse
      */
     public function render(): JsonResponse
     {

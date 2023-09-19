@@ -42,11 +42,12 @@ class Handler extends ExceptionHandler
     {
         if ($e instanceof ValidationException) {
             return $e->render();
-        } else if ($e instanceof ModelNotFoundException) {
+        } elseif ($e instanceof ModelNotFoundException) {
             return $this->returnError($e->getMessage(), Response::HTTP_NOT_FOUND);
-        } else if ($e instanceof ParsingException) {
+        } elseif ($e instanceof ParsingException) {
             return $e->render();
         }
+
         return parent::render($request, $e);
     }
 }

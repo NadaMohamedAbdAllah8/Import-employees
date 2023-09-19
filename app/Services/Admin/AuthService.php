@@ -19,7 +19,7 @@ class AuthService
                 throw new ValidationException('Invalid credentials');
             }
 
-            if (!Hash::check($credentials['password'], $admin->password)) {
+            if (! Hash::check($credentials['password'], $admin->password)) {
                 throw new ValidationException('Invalid credentials');
             }
 
@@ -33,7 +33,7 @@ class AuthService
     public function createToken($admin)
     {
         return DB::transaction(function () use ($admin) {
-            if (!$admin->api_token) {
+            if (! $admin->api_token) {
                 $admin->api_token = \Str::random(80);
             }
 
