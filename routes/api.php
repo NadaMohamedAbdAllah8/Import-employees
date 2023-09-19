@@ -24,7 +24,6 @@ Route::group(['prefix' => 'admin', 'namespace' => 'App\Http\Controllers\Admin'],
 
             Route::apiResource('/employees', EmployeeController::class)->except(['store', 'update']);
             Route::post('/employees/import-excel', [EmployeeController::class, 'import']);
-            Route::post('/employees/import-spatie', [EmployeeController::class, 'spatieImport']);
         });
 
     });
