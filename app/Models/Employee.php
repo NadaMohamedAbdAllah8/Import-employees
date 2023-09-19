@@ -43,7 +43,7 @@ class Employee extends Model
 
     public function getTimeOfBirthAttribute($value)
     {
-        $this->attributes['time_of_birth'] = Carbon::createFromFormat(strtotime($value))->format('h:i:s A');
+        return Carbon::createFromFormat('H:i:s', $value)->format('h:i:s A');
     }
 
     public function getGenderAttribute($value)
