@@ -16,7 +16,6 @@ use Maatwebsite\Excel\Concerns\WithBatchInserts;
 use Maatwebsite\Excel\Concerns\WithChunkReading;
 use Maatwebsite\Excel\Concerns\WithStartRow;
 use Maatwebsite\Excel\Concerns\WithUpserts;
-use PhpOffice\PhpSpreadsheet\Shared\Date;
 use Throwable;
 
 class EmployeeImport implements ShouldQueue, ToModel, WithBatchInserts, WithChunkReading, WithStartRow, WithUpserts
@@ -76,10 +75,14 @@ class EmployeeImport implements ShouldQueue, ToModel, WithBatchInserts, WithChun
                 'zip_code_id' => $zip_code_id,
             ]);
         } catch (Throwable $e) {
-            Log::error('Error happened for ' . $emp_id . ' ,error: ' . $e->getMessage());
+            Log::error('Error happened for '.$emp_id.' ,error: '.$e->getMessage());
         }
     }
 
+    /**
+     * Defines the start row
+     * 2 to skip the header
+     */
     public function startRow(): int
     {
         return 2;
