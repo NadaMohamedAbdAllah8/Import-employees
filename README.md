@@ -33,6 +33,10 @@ As an admin you can
 
 -   `php artisan db:seed`
 
+4. To Generate application keys
+
+-   `php artisan key:generate`
+
 ## Usage
 
 1. Start the server by running `php artisan serve`.
