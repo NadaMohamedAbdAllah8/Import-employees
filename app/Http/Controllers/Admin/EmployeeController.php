@@ -64,6 +64,6 @@ class EmployeeController extends Controller
     {
         $this->employee_service->import($request);
 
-        return $this->returnSuccessMessage('Imported successfully');
+        return $this->returnSuccessMessage('Added to queue successfully');
     }
 }
