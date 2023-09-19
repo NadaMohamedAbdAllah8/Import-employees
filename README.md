@@ -43,7 +43,7 @@ As an admin you can
 
 2. Start the queue by running `php artisan queue:work`
 
-3. To login as an admin user, go to http://127.0.0.1:8000/login (using default host and port) and use `admin` as the username and `password` as the password.
+3. To login as an admin user, go to http://127.0.0.1:8000/login (using default host and port) and use `admin@admin.com` as the username and `password` as the password.
 
 ## More to add
 
