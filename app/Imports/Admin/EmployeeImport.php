@@ -19,9 +19,9 @@ use Maatwebsite\Excel\Concerns\WithUpserts;
 use PhpOffice\PhpSpreadsheet\Shared\Date;
 use Throwable;
 
-class EmployeeImport implements ToModel, WithStartRow, WithUpserts, WithChunkReading, WithBatchInserts, ShouldQueue
+class EmployeeImport implements ShouldQueue, ToModel, WithBatchInserts, WithChunkReading, WithStartRow, WithUpserts
 {
-    use SkipsFailures, SkipsErrors;
+    use SkipsErrors, SkipsFailures;
 
     public function __construct(private EmployeeImportService $import_service)
     {
@@ -35,6 +35,7 @@ class EmployeeImport implements ToModel, WithStartRow, WithUpserts, WithChunkRea
      * 9/21/1982     1:53:14 AM     34.87         02-01-08         9.49
      * Phone No.       Place Name  County        City      Zip    Region      User Name
      * 212-376-9125    Clymer      Chautauqua    Clymer    14724  Northeast   sibumgarner
+     *
      * @throws ValidationException, ParsingException
      */
     public function model(array $row)
@@ -50,10 +51,9 @@ class EmployeeImport implements ToModel, WithStartRow, WithUpserts, WithChunkRea
 
             $prefix_id = $this->firstOrCreatePrefix($row[EmployeeHeader::NAME_PREFIX_INDEX])->id;
 
-            $region_id = $this->import_service->firstOrCreateRegion($row[EmployeeHeader::REGION_INDEX])->id;
-            $county_id = $this->import_service->firstOrCreateCounty($row[EmployeeHeader::COUNTY_INDEX], $region_id)->id;
-            $city_id = $this->import_service->firstOrCreateCity($row[EmployeeHeader::CITY_INDEX], $county_id)->id;
-            $zip_code_id = $this->import_service->firstOrCreateZipCode($row[EmployeeHeader::ZIP_INDEX], $city_id)->id;
+            $zip_code_id = $this->import_service->getZipCode($row[EmployeeHeader::REGION_INDEX],
+                $row[EmployeeHeader::COUNTY_INDEX], $row[EmployeeHeader::CITY_INDEX],
+                $row[EmployeeHeader::ZIP_INDEX])->id;
 
             return new Employee([
                 'id' => $emp_id,
@@ -74,7 +74,7 @@ class EmployeeImport implements ToModel, WithStartRow, WithUpserts, WithChunkRea
                 'zip_code_id' => $zip_code_id,
             ]);
         } catch (Throwable $e) {
-            Log::error('Error happened for ' . $emp_id . ' ,error: ' . $e->getMessage());
+            Log::error('Error happened for '.$emp_id.' ,error: '.$e->getMessage());
         }
     }
 
@@ -85,9 +85,6 @@ class EmployeeImport implements ToModel, WithStartRow, WithUpserts, WithChunkRea
         ]);
     }
 
-    /**
-     * @return int
-     */
     public function startRow(): int
     {
         return 2;
@@ -95,6 +92,7 @@ class EmployeeImport implements ToModel, WithStartRow, WithUpserts, WithChunkRea
 
     /**
      * Defines the unique column in used by the upsert
+     *
      * @return string The unique column
      */
     public function uniqueBy(): string

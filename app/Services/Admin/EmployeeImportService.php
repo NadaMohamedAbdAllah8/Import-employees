@@ -31,13 +31,13 @@ class EmployeeImportService
 
             return $date;
         } catch (Throwable $e) {
-            throw new ParsingException('Failed to parse date!, error message:' . $e->getMessage());
+            throw new ParsingException('Failed to parse date!, error message:'.$e->getMessage());
         }
     }
 
     public function transformTime($time)
     {
-        if (!is_string($time)) {
+        if (! is_string($time)) {
             $time = Date::excelToDateTimeObject($time)->format('H:i:s');
         } else {
             $time = DateTime::createFromFormat('g:i:s A', $time);
@@ -57,6 +57,15 @@ class EmployeeImportService
         return Prefix::firstOrCreate([
             'prefix' => $prefix,
         ])->fresh();
+    }
+
+    public function getZipCode($region_name, $county_name, $city_name, $zip_code): ZipCode
+    {
+        $region_id = $this->firstOrCreateRegion($region_name)->id;
+        $county_id = $this->firstOrCreateCounty($county_name, $region_id)->id;
+        $city_id = $this->firstOrCreateCity($city_name, $county_id)->id;
+
+        return $this->firstOrCreateZipCode($zip_code, $city_id);
     }
 
     public function firstOrCreateRegion($name): Region
