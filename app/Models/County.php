@@ -8,4 +8,9 @@ use Illuminate\Database\Eloquent\Model;
 class County extends Model
 {
     use HasFactory;
+
+    protected $fillable = [
+        'name',
+        'region_id',
+    ];
 }

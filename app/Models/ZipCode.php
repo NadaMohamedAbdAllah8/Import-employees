@@ -8,4 +8,9 @@ use Illuminate\Database\Eloquent\Model;
 class ZipCode extends Model
 {
     use HasFactory;
+
+    protected $fillable = [
+        'code',
+        'city_id',
+    ];
 }
