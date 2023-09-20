@@ -6,7 +6,7 @@ In case any of the imported data had a validation error the data row will not be
 
 ## Features
 
-1. Import employees, using POST api/employee/import
+1. Import employees, by uploading file, using POST api/employee
 
 As an admin you can
 
