@@ -6,7 +6,7 @@ In case any of the imported data had a validation error the data row will not be
 
 ## Features
 
-1. Import employees, by uploading file, using POST api/employee
+1. Import employees, by uploading file, using POST api/employees
 
 As an admin you can
 
@@ -14,9 +14,9 @@ As an admin you can
 2. Show employee
 3. Delete employee
    Using RESTful API employee
-   • GET /api/employee
-   • GET /api/employee/{id}
-   • DELETE /api/employee/{id}
+   • GET /api/employees
+   • GET /api/employees/{id}
+   • DELETE /api/employees/{id}
 
 ## Installation
 
@@ -44,8 +44,3 @@ As an admin you can
 2. Start the queue by running `php artisan queue:work`
 
 3. To login as an admin user, go to http://127.0.0.1:8000/login (using default host and port) and use `admin@admin.com` as the username and `password` as the password.
-
-## More to add
-
-A. Tests
-B. Notification when the import is over
