@@ -44,6 +44,19 @@ trait GeneralResponseTrait
         ], $code);
     }
 
+    public function returnCreatedWithData($value, $message): JsonResponse
+    {
+        return response()->json([
+            'status' => true,
+            'message' => $message,
+            'item' => $value,
+        ], Response::HTTP_CREATED);
+    }
+
+    public function returnDeletedWithoutData(): JsonResponse
+    {
+        return response()->json([], Response::HTTP_NO_CONTENT);
+    }
     public function returnDataWithPaginate($value, $message, $resourcePath, $groupBy = null): JsonResponse
     {
         $items = $resourcePath::collection($value);
