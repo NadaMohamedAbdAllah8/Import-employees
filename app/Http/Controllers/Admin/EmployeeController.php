@@ -2,8 +2,11 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\DataTransferObjects\EmployeeDTO;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\Employee\ImportRequest;
+use App\Http\Requests\Admin\Employee\StoreRequest;
+use App\Http\Requests\Admin\Employee\UpdateRequest;
 use App\Http\Resources\Admin\EmployeeResource;
 use App\Models\Employee;
 use App\Services\Admin\EmployeeService;
@@ -16,8 +19,7 @@ class EmployeeController extends Controller
     use GeneralResponseTrait;
 
     public function __construct(private EmployeeService $employee_service)
-    {
-    }
+    {}
 
     /**
      * Display a listing of the resource.
@@ -35,6 +37,21 @@ class EmployeeController extends Controller
     }
 
     /**
+     * Store the specified resource.
+     */
+    public function store(StoreRequest $request): JsonResponse
+    {
+        $employee_data = EmployeeDTO::fromRequest($request);
+        $employee = $this->employee_service->createOne($employee_data);
+
+        return $this->returnCreatedWithData(
+            new EmployeeResource($employee),
+            'Saved successfully'
+        );
+
+    }
+
+    /**
      * Display the specified resource.
      *
      * @throws ModelNotFoundException
@@ -48,13 +65,27 @@ class EmployeeController extends Controller
     }
 
     /**
+     * Update the specified resource.
+     */
+    public function update(UpdateRequest $request, Employee $employee): JsonResponse
+    {
+        $employee_data = EmployeeDTO::fromRequest($request);
+        $employee = $this->employee_service->updateOne($employee_data, $employee);
+
+        return $this->returnData(
+            new EmployeeResource($employee),
+            'Success'
+        );
+    }
+
+    /**
      * Remove the specified resource from storage.
      */
     public function destroy(Employee $employee): JsonResponse
     {
         $this->employee_service->deleteOne($employee);
 
-        return $this->returnSuccessMessage('Deleted successfully');
+        return $this->returnDeletedWithoutData();
     }
 
     /**

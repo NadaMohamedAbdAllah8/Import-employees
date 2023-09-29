@@ -11,9 +11,7 @@ Route::group(['namespace' => 'App\Http\Controllers\Admin'],
         Route::group(['middleware' => ['auth:api', 'admin']], function () {
             Route::post('logout', [AuthController::class, 'logout']);
 
-            Route::apiResource('/employees', EmployeeController::class)
-                ->except(['store', 'update']);
-            Route::post('/employees', [EmployeeController::class, 'import']);
+            Route::apiResource('/employees', EmployeeController::class);
+            Route::post('/employees/import', [EmployeeController::class, 'import']);
         });
-
     });
