@@ -43,6 +43,10 @@ class Employee extends Model
 
     public function getTimeOfBirthAttribute($value)
     {
+        if (is_null($value)) {
+            return null;
+        }
+
         return Carbon::createFromFormat('H:i:s', $value)->format('h:i:s A');
     }
 
