@@ -58,7 +58,7 @@ class EmployeeService
     {
         return DB::transaction(function () use ($employee, $employee_data) {
             return tap($employee)->update(
-                $employee_data->toArray()
+                $employee_data->nonNullToArray()
             );
         });
     }

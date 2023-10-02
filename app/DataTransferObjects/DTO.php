@@ -6,7 +6,7 @@ use Illuminate\Http\Request;
 
 abstract class DTO
 {
-    public function toArray(): array
+    public function nonNullToArray(): array
     {
         $array = [];
         foreach ($this as $key => $value) {
