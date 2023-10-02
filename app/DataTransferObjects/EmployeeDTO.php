@@ -4,7 +4,7 @@ namespace App\DataTransferObjects;
 
 use Illuminate\Http\Request;
 
-class EmployeeDTO
+class EmployeeDTO extends DTO
 {
     public function __construct(
         public readonly ?int $id,
