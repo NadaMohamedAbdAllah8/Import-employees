@@ -1,11 +1,11 @@
 <?php
 
-namespace App\Http\Controllers\Admin;
+namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
-use App\Http\Requests\Admin\Auth\LoginRequest;
-use App\Http\Resources\Admin\AdminResource;
-use App\Services\Admin\AuthService;
+use App\Http\Requests\Auth\LoginRequest;
+use App\Http\Resources\AdminResource;
+use App\Services\AuthService;
 use App\Traits\GeneralResponseTrait;
 
 class AuthController extends Controller

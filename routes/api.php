@@ -1,10 +1,10 @@
 <?php
 
-use App\Http\Controllers\Admin\AuthController;
-use App\Http\Controllers\Admin\EmployeeController;
+use App\Http\Controllers\AuthController;
+use App\Http\Controllers\EmployeeController;
 use Illuminate\Support\Facades\Route;
 
-Route::group(['namespace' => 'App\Http\Controllers\Admin'],
+Route::group(['namespace' => 'App\Http\Controllers'],
     function () {
         Route::post('login', [AuthController::class, 'login']);
 
@@ -15,6 +15,5 @@ Route::group(['namespace' => 'App\Http\Controllers\Admin'],
             Route::post('/employees/import', [EmployeeController::class, 'import']);
 
             Route::apiResource('/regions', RegionController::class);
-
         });
     });

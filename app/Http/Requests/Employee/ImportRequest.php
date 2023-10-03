@@ -1,10 +1,10 @@
 <?php
 
-namespace App\Http\Requests\Admin\Auth;
+namespace App\Http\Requests\Employee;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class LoginRequest extends FormRequest
+class ImportRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -23,10 +23,8 @@ class LoginRequest extends FormRequest
      */
     public function rules()
     {
-
         return [
-            'email' => 'required|email|max:191|exists:admins,email',
-            'password' => 'required',
+            'file' => 'required|file|mimes:xlsx,txt,csv,tsv',
         ];
     }
 }

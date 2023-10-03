@@ -1,15 +1,15 @@
 <?php
 
-namespace App\Http\Controllers\Admin;
+namespace App\Http\Controllers;
 
 use App\DataTransferObjects\EmployeeDTO;
 use App\Http\Controllers\Controller;
-use App\Http\Requests\Admin\Employee\ImportRequest;
-use App\Http\Requests\Admin\Employee\StoreRequest;
-use App\Http\Requests\Admin\Employee\UpdateRequest;
-use App\Http\Resources\Admin\EmployeeResource;
+use App\Http\Requests\Employee\ImportRequest;
+use App\Http\Requests\Employee\StoreRequest;
+use App\Http\Requests\Employee\UpdateRequest;
+use App\Http\Resources\EmployeeResource;
 use App\Models\Employee;
-use App\Services\Admin\EmployeeService;
+use App\Services\EmployeeService;
 use App\Traits\GeneralResponseTrait;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;

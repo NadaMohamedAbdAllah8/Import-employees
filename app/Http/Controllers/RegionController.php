@@ -1,14 +1,14 @@
 <?php
 
-namespace App\Http\Controllers\Admin;
+namespace App\Http\Controllers;
 
 use App\DataTransferObjects\RegionDTO;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Region\StoreRequest;
 use App\Http\Requests\Region\UpdateRequest;
-use App\Http\Resources\Admin\RegionResource;
+use App\Http\Resources\RegionResource;
 use App\Models\Region;
-use App\Services\Admin\RegionService;
+use App\Services\RegionService;
 use App\Traits\GeneralResponseTrait;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;

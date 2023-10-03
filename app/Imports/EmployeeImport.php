@@ -1,11 +1,11 @@
 <?php
 
-namespace App\Imports\Admin;
+namespace App\Imports;
 
 use App\Constants\EmployeeHeader;
 use App\Models\Employee;
-use App\Services\Admin\EmployeeImportService;
-use App\Validators\Admin\EmployeeValidator;
+use App\Services\EmployeeImportService;
+use App\Validators\EmployeeValidator;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Support\Facades\Log;
 use Maatwebsite\Excel\Concerns\SkipsErrors;

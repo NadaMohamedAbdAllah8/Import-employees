@@ -1,9 +1,9 @@
 <?php
 
-namespace App\Services\Admin;
+namespace App\Services;
 
 use App\DataTransferObjects\EmployeeDTO;
-use App\Imports\Admin\EmployeeImport;
+use App\Imports\EmployeeImport;
 use App\Models\Employee;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Facades\DB;
