@@ -26,9 +26,9 @@ class UpdateRequest extends FormRequest
     {
         return [
             'email' => ['nullable', 'email', 'max:191',
-                Rule::unique('employees', 'email')->ignore($this->employee->id)],
+                Rule::unique('employees', 'email')->ignore($this->id)],
             'username' => ['nullable', 'string',
-                Rule::unique('employees', 'username')->ignore($this->employee->id)],
+                Rule::unique('employees', 'username')->ignore($this->id)],
             'first_name' => 'nullable|string|min:2|max:120',
             'last_name' => 'nullable|string|min:2|max:120',
             'middle_initial' => 'nullable|string|size:1',
@@ -36,7 +36,7 @@ class UpdateRequest extends FormRequest
             'zip_code_id' => 'nullable|exists:zip_codes,id',
             'prefix_id' => 'nullable|exists:prefixes,id',
             'phone_number' => ['nullable', 'string',
-                Rule::unique('employees', 'phone_number')->ignore($this->employee->id), 'regex:/^(\+\d{1,3}[- ]?)?\d{10}$/'],
+                Rule::unique('employees', 'phone_number')->ignore($this->id), 'regex:/^(\+\d{1,3}[- ]?)?\d{10}$/'],
             'place_name' => 'nullable|string|min:2|max:225',
             'age_in_years' => 'nullable|numeric',
             'age_in_company_in_years' => 'nullable|numeric',

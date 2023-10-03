@@ -27,7 +27,7 @@ class UpdateRequest extends FormRequest
     {
         return [
             'name' => ['nullable', 'string',
-                Rule::unique('regions', 'name')->ignore($this->region->id)],
+                Rule::unique('regions', 'name')->ignore($this->id)],
         ];
     }
 }
