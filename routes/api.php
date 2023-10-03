@@ -13,5 +13,8 @@ Route::group(['namespace' => 'App\Http\Controllers\Admin'],
 
             Route::apiResource('/employees', EmployeeController::class);
             Route::post('/employees/import', [EmployeeController::class, 'import']);
+
+            Route::apiResource('/regions', RegionController::class);
+
         });
     });
