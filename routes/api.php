@@ -15,5 +15,8 @@ Route::group(['namespace' => 'App\Http\Controllers'],
             Route::post('/employees/import', [EmployeeController::class, 'import']);
 
             Route::apiResource('/regions', RegionController::class);
+
+            Route::apiResource('/prefixes', PrefixController::class);
+
         });
     });
