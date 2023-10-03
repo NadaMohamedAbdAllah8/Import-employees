@@ -18,5 +18,6 @@ Route::group(['namespace' => 'App\Http\Controllers'],
 
             Route::apiResource('/prefixes', PrefixController::class);
 
+            Route::apiResource('/zip-codes', ZipCodeController::class);
         });
     });
