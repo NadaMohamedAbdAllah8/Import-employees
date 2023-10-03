@@ -30,7 +30,7 @@ class RegionService
 
     public function updateOne(RegionDTO $region_dto, Region $region): Region
     {
-        return DB::transaction(function () use ($region, $region_dto) {
+        return DB::transaction(function () use ($region_dto, $region) {
             return tap($region)->update(
                 $region_dto->nonNullToArray()
             );

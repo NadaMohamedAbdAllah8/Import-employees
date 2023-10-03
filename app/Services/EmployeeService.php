@@ -56,7 +56,7 @@ class EmployeeService
 
     public function updateOne(EmployeeDTO $employee_data, Employee $employee): Employee
     {
-        return DB::transaction(function () use ($employee, $employee_data) {
+        return DB::transaction(function () use ($employee_data, $employee) {
             return tap($employee)->update(
                 $employee_data->nonNullToArray()
             );
