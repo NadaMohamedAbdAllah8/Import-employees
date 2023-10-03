@@ -40,8 +40,8 @@ class PrefixController extends Controller
      */
     public function store(StoreRequest $request): JsonResponse
     {
-        $prefix_data = PrefixDTO::fromRequest($request);
-        $prefix = $this->prefix_service->createOne($prefix_data);
+        $prefix_dto = PrefixDTO::fromRequest($request);
+        $prefix = $this->prefix_service->createOne($prefix_dto);
 
         return $this->returnCreatedWithData(
             new PrefixResource($prefix),
@@ -68,8 +68,8 @@ class PrefixController extends Controller
      */
     public function update(UpdateRequest $request, Prefix $prefix): JsonResponse
     {
-        $prefix_data = PrefixDTO::fromRequest($request);
-        $prefix = $this->prefix_service->updateOne($prefix_data, $prefix);
+        $prefix_dto = PrefixDTO::fromRequest($request);
+        $prefix = $this->prefix_service->updateOne($prefix_dto, $prefix);
 
         return $this->returnData(
             new PrefixResource($prefix),

@@ -41,8 +41,8 @@ class EmployeeController extends Controller
      */
     public function store(StoreRequest $request): JsonResponse
     {
-        $employee_data = EmployeeDTO::fromRequest($request);
-        $employee = $this->employee_service->createOne($employee_data);
+        $employee_dto = EmployeeDTO::fromRequest($request);
+        $employee = $this->employee_service->createOne($employee_dto);
 
         return $this->returnCreatedWithData(
             new EmployeeResource($employee),
@@ -69,8 +69,8 @@ class EmployeeController extends Controller
      */
     public function update(UpdateRequest $request, Employee $employee): JsonResponse
     {
-        $employee_data = EmployeeDTO::fromRequest($request);
-        $employee = $this->employee_service->updateOne($employee_data, $employee);
+        $employee_dto = EmployeeDTO::fromRequest($request);
+        $employee = $this->employee_service->updateOne($employee_dto, $employee);
 
         return $this->returnData(
             new EmployeeResource($employee),

@@ -40,8 +40,8 @@ class RegionController extends Controller
      */
     public function store(StoreRequest $request): JsonResponse
     {
-        $region_data = RegionDTO::fromRequest($request);
-        $region = $this->region_service->createOne($region_data);
+        $region_dto = RegionDTO::fromRequest($request);
+        $region = $this->region_service->createOne($region_dto);
 
         return $this->returnCreatedWithData(
             new RegionResource($region),
@@ -68,8 +68,8 @@ class RegionController extends Controller
      */
     public function update(UpdateRequest $request, Region $region): JsonResponse
     {
-        $region_data = RegionDTO::fromRequest($request);
-        $region = $this->region_service->updateOne($region_data, $region);
+        $region_dto = RegionDTO::fromRequest($request);
+        $region = $this->region_service->updateOne($region_dto, $region);
 
         return $this->returnData(
             new RegionResource($region),
