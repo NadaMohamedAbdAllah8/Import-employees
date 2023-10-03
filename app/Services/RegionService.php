@@ -14,21 +14,12 @@ class RegionService
         return Region::orderBy('id')->paginate($paginate);
     }
 
-    public function createOne(RegionDTO $region_data): ?Region
+    public function createOne(RegionDTO $region_dto): ?Region
     {
-        return DB::transaction(function () use ($region_data) {
+        return DB::transaction(function () use ($region_dto) {
             return Region::create(
-                $region_data->nonNullToArray()
+                $region_dto->nonNullToArray()
             )->fresh();
-        });
-    }
-
-    public function updateOrCreateOne($name): ?Region
-    {
-        return DB::transaction(function () use ($name) {
-            return Region::updateOrCreate([
-                'name' => $name,
-            ])->fresh();
         });
     }
 
@@ -37,12 +28,21 @@ class RegionService
         return Region::findOrFail($id);
     }
 
-    public function updateOne(RegionDTO $region_data, Region $region): Region
+    public function updateOne(RegionDTO $region_dto, Region $region): Region
     {
-        return DB::transaction(function () use ($region, $region_data) {
+        return DB::transaction(function () use ($region, $region_dto) {
             return tap($region)->update(
-                $region_data->nonNullToArray()
+                $region_dto->nonNullToArray()
             );
+        });
+    }
+
+    public function updateOrCreateOne(RegionDTO $region_dto): ?Region
+    {
+        return DB::transaction(function () use ($region_dto) {
+            return Region::updateOrCreate([
+                'name' => $region_dto->name,
+            ])->fresh();
         });
     }
 
