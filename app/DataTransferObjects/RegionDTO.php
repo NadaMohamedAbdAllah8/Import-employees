@@ -8,7 +8,8 @@ class RegionDTO extends DTO
 {
     public function __construct(
         public readonly ?string $name
-    ) {}
+    ) {
+    }
 
     public static function fromRequest(Request $request): self
     {

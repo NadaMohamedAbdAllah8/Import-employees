@@ -14,9 +14,9 @@ abstract class DTO
                 $array[$key] = $value;
             }
         }
+
         return $array;
     }
 
     abstract public static function fromRequest(Request $request): self;
-
 }

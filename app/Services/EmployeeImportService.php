@@ -31,13 +31,13 @@ class EmployeeImportService
 
             return $date;
         } catch (Throwable $e) {
-            throw new ParsingException('Failed to parse date!, error message:' . $e->getMessage());
+            throw new ParsingException('Failed to parse date!, error message:'.$e->getMessage());
         }
     }
 
     public function transformTime($time)
     {
-        if (!is_string($time)) {
+        if (! is_string($time)) {
             $time = Date::excelToDateTimeObject($time)->format('H:i:s');
         } else {
             $time = DateTime::createFromFormat('g:i:s A', $time);

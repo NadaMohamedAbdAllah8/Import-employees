@@ -3,7 +3,6 @@
 namespace App\Http\Controllers;
 
 use App\DataTransferObjects\RegionDTO;
-use App\Http\Controllers\Controller;
 use App\Http\Requests\Region\StoreRequest;
 use App\Http\Requests\Region\UpdateRequest;
 use App\Http\Resources\RegionResource;
@@ -18,7 +17,8 @@ class RegionController extends Controller
     use GeneralResponseTrait;
 
     public function __construct(private RegionService $region_service)
-    {}
+    {
+    }
 
     /**
      * Display a listing of the resource.

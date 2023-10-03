@@ -23,7 +23,8 @@ class EmployeeDTO extends DTO
         public readonly ?string $time_of_birth,
         public readonly ?int $zip_code_id,
         public readonly ?int $prefix_id,
-    ) {}
+    ) {
+    }
 
     public static function fromRequest(Request $request): self
     {

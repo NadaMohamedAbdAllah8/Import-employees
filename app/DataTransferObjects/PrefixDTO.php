@@ -8,7 +8,8 @@ class PrefixDTO extends DTO
 {
     public function __construct(
         public readonly ?string $prefix
-    ) {}
+    ) {
+    }
 
     public static function fromRequest(Request $request): self
     {

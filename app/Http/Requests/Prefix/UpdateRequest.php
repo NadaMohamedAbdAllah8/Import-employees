@@ -5,7 +5,6 @@ namespace App\Http\Requests\Prefix;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 
-// D:\Programming-Studying\Laravel\Projects\Import-employees\import-employees-totally-new\app\Http\Requests\Employee\Region\UpdateRequest.php
 class UpdateRequest extends FormRequest
 {
     /**

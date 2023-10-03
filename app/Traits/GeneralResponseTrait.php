@@ -57,6 +57,7 @@ trait GeneralResponseTrait
     {
         return response()->json([], Response::HTTP_NO_CONTENT);
     }
+
     public function returnDataWithPaginate($value, $message, $resourcePath, $groupBy = null): JsonResponse
     {
         $items = $resourcePath::collection($value);

@@ -74,7 +74,7 @@ class EmployeeImport implements ShouldQueue, ToModel, WithBatchInserts, WithChun
                 'zip_code_id' => $zip_code_id,
             ]);
         } catch (Throwable $e) {
-            Log::error('Error happened for ' . $emp_id . ' ,error: ' . $e->getMessage());
+            Log::error('Error happened for '.$emp_id.' ,error: '.$e->getMessage());
         }
     }
 

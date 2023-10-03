@@ -3,7 +3,6 @@
 namespace App\Http\Controllers;
 
 use App\DataTransferObjects\PrefixDTO;
-use App\Http\Controllers\Controller;
 use App\Http\Requests\Prefix\StoreRequest;
 use App\Http\Requests\Prefix\UpdateRequest;
 use App\Http\Resources\PrefixResource;
@@ -18,7 +17,8 @@ class PrefixController extends Controller
     use GeneralResponseTrait;
 
     public function __construct(private PrefixService $prefix_service)
-    {}
+    {
+    }
 
     /**
      * Display a listing of the resource.
