@@ -41,8 +41,8 @@ class ZipCodeService
     {
         return DB::transaction(function () use ($zip_code_dto) {
             return ZipCode::updateOrCreate([
-                'zip_code' => $zip_code_dto->code,
-            ])->fresh();
+                'code' => $zip_code_dto->code,
+            ], $zip_code_dto->nonNullToArray())->fresh();
         });
     }
 
