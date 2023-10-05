@@ -14,10 +14,13 @@ Route::group(['namespace' => 'App\Http\Controllers'],
             Route::apiResource('/employees', EmployeeController::class);
             Route::post('/employees/import', [EmployeeController::class, 'import']);
 
-            Route::apiResource('/regions', RegionController::class);
-
             Route::apiResource('/prefixes', PrefixController::class);
 
+            Route::apiResource('/regions', RegionController::class);
+
+            Route::apiResource('/counties', CountyController::class);
+
             Route::apiResource('/zip-codes', ZipCodeController::class);
+
         });
     });
