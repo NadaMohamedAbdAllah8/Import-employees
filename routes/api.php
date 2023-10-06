@@ -20,7 +20,8 @@ Route::group(['namespace' => 'App\Http\Controllers'],
 
             Route::apiResource('/counties', CountyController::class);
 
-            Route::apiResource('/zip-codes', ZipCodeController::class);
+            Route::apiResource('/cities', CityController::class);
 
+            Route::apiResource('/zip-codes', ZipCodeController::class);
         });
     });
