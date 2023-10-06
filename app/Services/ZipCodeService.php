@@ -37,10 +37,10 @@ class ZipCodeService
         });
     }
 
-    public function updateOrCreate(ZipCodeDTO $zip_code_dto): ?ZipCode
+    public function firstOrCreate(ZipCodeDTO $zip_code_dto): ?ZipCode
     {
         return DB::transaction(function () use ($zip_code_dto) {
-            return ZipCode::updateOrCreate([
+            return ZipCode::firstOrCreate([
                 'code' => $zip_code_dto->code,
             ], $zip_code_dto->nonNullToArray())->fresh();
         });

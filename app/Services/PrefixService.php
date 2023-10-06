@@ -37,10 +37,10 @@ class PrefixService
         });
     }
 
-    public function updateOrCreate(PrefixDTO $prefix_dto): ?Prefix
+    public function firstOrCreate(PrefixDTO $prefix_dto): ?Prefix
     {
         return DB::transaction(function () use ($prefix_dto) {
-            return Prefix::updateOrCreate([
+            return Prefix::firstOrCreate([
                 'prefix' => $prefix_dto->prefix,
             ])->fresh();
         });

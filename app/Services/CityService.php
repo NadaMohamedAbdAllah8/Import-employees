@@ -37,10 +37,10 @@ class CityService
         });
     }
 
-    public function updateOrCreate(CityDTO $city_dto): ?City
+    public function firstOrCreate(CityDTO $city_dto): ?City
     {
         return DB::transaction(function () use ($city_dto) {
-            return City::updateOrCreate(['name' => $city_dto->name],
+            return City::firstOrCreate(['name' => $city_dto->name],
                 $city_dto->nonNullToArray())->fresh();
         });
     }

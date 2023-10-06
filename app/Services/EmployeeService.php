@@ -38,10 +38,10 @@ class EmployeeService
         });
     }
 
-    public function updateOrCreate($employee_id, $employee_data): ?Employee
+    public function firstOrCreate($employee_id, $employee_data): ?Employee
     {
         return DB::transaction(function () use ($employee_id, $employee_data) {
-            return Employee::updateOrCreate([
+            return Employee::firstOrCreate([
                 'id' => $employee_id,
             ], $employee_data)->fresh();
         });
