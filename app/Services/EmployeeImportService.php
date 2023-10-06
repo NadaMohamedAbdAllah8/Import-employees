@@ -5,7 +5,6 @@ namespace App\Services;
 use App\Exceptions\ParsingException;
 use App\Models\City;
 use App\Models\County;
-use App\Models\Prefix;
 use App\Models\Region;
 use App\Models\ZipCode;
 use Carbon\Carbon;
@@ -31,13 +30,13 @@ class EmployeeImportService
 
             return $date;
         } catch (Throwable $e) {
-            throw new ParsingException('Failed to parse date!, error message:'.$e->getMessage());
+            throw new ParsingException('Failed to parse date!, error message:' . $e->getMessage());
         }
     }
 
     public function transformTime($time)
     {
-        if (! is_string($time)) {
+        if (!is_string($time)) {
             $time = Date::excelToDateTimeObject($time)->format('H:i:s');
         } else {
             $time = DateTime::createFromFormat('g:i:s A', $time);
@@ -50,13 +49,6 @@ class EmployeeImportService
         }
 
         return $time;
-    }
-
-    public function firstOrCreatePrefix($prefix): Prefix
-    {
-        return Prefix::firstOrCreate([
-            'prefix' => $prefix,
-        ])->fresh();
     }
 
     public function getZipCode($region_name, $county_name, $city_name, $zip_code): ZipCode

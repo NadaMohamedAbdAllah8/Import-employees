@@ -5,6 +5,7 @@ namespace App\Imports;
 use App\Constants\EmployeeHeader;
 use App\Models\Employee;
 use App\Services\EmployeeImportService;
+use App\Services\PrefixService;
 use App\Validators\EmployeeValidator;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Support\Facades\Log;
@@ -21,8 +22,8 @@ class EmployeeImport implements ShouldQueue, ToModel, WithBatchInserts, WithChun
 {
     use SkipsErrors, SkipsFailures;
 
-    public function __construct(private EmployeeImportService $import_service)
-    {
+    public function __construct(private EmployeeImportService $import_service,
+        private PrefixService $prefix_service, ) {
     }
 
     /**
@@ -47,7 +48,7 @@ class EmployeeImport implements ShouldQueue, ToModel, WithBatchInserts, WithChun
             $date_of_joining = $this->import_service->transformDate($row[EmployeeHeader::DATE_OF_JOINING_INDEX]);
             $time_of_birth = $this->import_service->transformTime($row[EmployeeHeader::TIME_OF_BIRTH_INDEX]);
 
-            $prefix_id = $this->import_service->firstOrCreatePrefix($row[EmployeeHeader::NAME_PREFIX_INDEX])
+            $prefix_id = $this->prefix_service->firstOrCreate($row[EmployeeHeader::NAME_PREFIX_INDEX])
                 ->id;
 
             $zip_code_id = $this->import_service->getZipCode($row[EmployeeHeader::REGION_INDEX],
@@ -74,7 +75,7 @@ class EmployeeImport implements ShouldQueue, ToModel, WithBatchInserts, WithChun
                 'zip_code_id' => $zip_code_id,
             ]);
         } catch (Throwable $e) {
-            Log::error('Error happened for '.$emp_id.' ,error: '.$e->getMessage());
+            Log::error('Error happened for ' . $emp_id . ' ,error: ' . $e->getMessage());
         }
     }
 
