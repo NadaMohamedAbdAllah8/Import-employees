@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\DataTransferObjects\CountyDTO;
 use App\DataTransferObjects\RegionDTO;
 use App\Exceptions\ParsingException;
 use App\Models\City;
@@ -16,8 +17,8 @@ use Throwable;
 class EmployeeImportService
 {
 
-    public function __construct(private RegionService $region_service)
-    {
+    public function __construct(private RegionService $region_service,
+        private CountyService $county_service) {
     }
 
     public function transformDate($date)
@@ -62,7 +63,9 @@ class EmployeeImportService
         $region_dto = new RegionDTO($region_name);
         $region_id = $this->region_service->firstOrCreate($region_dto)->id;
 
-        $county_id = $this->firstOrCreateCounty($county_name, $region_id)->id;
+        $county_dto = new CountyDTO($county_name, $region_id);
+        $county_id = $this->county_service->firstOrCreate($county_dto)->id;
+
         $city_id = $this->firstOrCreateCity($city_name, $county_id)->id;
 
         return $this->firstOrCreateZipCode($zip_code, $city_id);
