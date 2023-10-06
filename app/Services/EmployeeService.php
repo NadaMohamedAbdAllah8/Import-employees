@@ -38,7 +38,7 @@ class EmployeeService
         });
     }
 
-    public function updateOrCreateOne($employee_id, $employee_data): ?Employee
+    public function updateOrCreate($employee_id, $employee_data): ?Employee
     {
         return DB::transaction(function () use ($employee_id, $employee_data) {
             return Employee::updateOrCreate([

@@ -37,7 +37,7 @@ class CountyService
         });
     }
 
-    public function updateOrCreateOne(CountyDTO $county_dto): ?County
+    public function updateOrCreate(CountyDTO $county_dto): ?County
     {
         return DB::transaction(function () use ($county_dto) {
             return County::updateOrCreate(['name' => $county_dto->name],

@@ -37,7 +37,7 @@ class CityService
         });
     }
 
-    public function updateOrCreateOne(CityDTO $city_dto): ?City
+    public function updateOrCreate(CityDTO $city_dto): ?City
     {
         return DB::transaction(function () use ($city_dto) {
             return City::updateOrCreate(['name' => $city_dto->name],

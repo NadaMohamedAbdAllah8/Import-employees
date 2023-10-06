@@ -37,7 +37,7 @@ class ZipCodeService
         });
     }
 
-    public function updateOrCreateOne(ZipCodeDTO $zip_code_dto): ?ZipCode
+    public function updateOrCreate(ZipCodeDTO $zip_code_dto): ?ZipCode
     {
         return DB::transaction(function () use ($zip_code_dto) {
             return ZipCode::updateOrCreate([

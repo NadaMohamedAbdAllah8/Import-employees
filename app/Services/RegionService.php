@@ -37,7 +37,7 @@ class RegionService
         });
     }
 
-    public function updateOrCreateOne(RegionDTO $region_dto): ?Region
+    public function updateOrCreate(RegionDTO $region_dto): ?Region
     {
         return DB::transaction(function () use ($region_dto) {
             return Region::updateOrCreate([

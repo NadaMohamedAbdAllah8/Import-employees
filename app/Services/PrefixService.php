@@ -37,7 +37,7 @@ class PrefixService
         });
     }
 
-    public function updateOrCreateOne(PrefixDTO $prefix_dto): ?Prefix
+    public function updateOrCreate(PrefixDTO $prefix_dto): ?Prefix
     {
         return DB::transaction(function () use ($prefix_dto) {
             return Prefix::updateOrCreate([
