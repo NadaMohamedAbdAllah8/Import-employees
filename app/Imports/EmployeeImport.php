@@ -3,6 +3,7 @@
 namespace App\Imports;
 
 use App\Constants\EmployeeHeader;
+use App\DataTransferObjects\PrefixDTO;
 use App\Models\Employee;
 use App\Services\EmployeeImportService;
 use App\Services\PrefixService;
@@ -48,7 +49,8 @@ class EmployeeImport implements ShouldQueue, ToModel, WithBatchInserts, WithChun
             $date_of_joining = $this->import_service->transformDate($row[EmployeeHeader::DATE_OF_JOINING_INDEX]);
             $time_of_birth = $this->import_service->transformTime($row[EmployeeHeader::TIME_OF_BIRTH_INDEX]);
 
-            $prefix_id = $this->prefix_service->firstOrCreate($row[EmployeeHeader::NAME_PREFIX_INDEX])
+            $prefix_dto = new PrefixDTO($row[EmployeeHeader::NAME_PREFIX_INDEX]);
+            $prefix_id = $this->prefix_service->firstOrCreate($prefix_dto)
                 ->id;
 
             $zip_code_id = $this->import_service->getZipCode($row[EmployeeHeader::REGION_INDEX],
