@@ -2,12 +2,11 @@
 
 namespace App\Services;
 
+use App\DataTransferObjects\CityDTO;
 use App\DataTransferObjects\CountyDTO;
 use App\DataTransferObjects\RegionDTO;
+use App\DataTransferObjects\ZipCodeDTO;
 use App\Exceptions\ParsingException;
-use App\Models\City;
-use App\Models\County;
-use App\Models\Region;
 use App\Models\ZipCode;
 use Carbon\Carbon;
 use DateTime;
@@ -18,7 +17,9 @@ class EmployeeImportService
 {
 
     public function __construct(private RegionService $region_service,
-        private CountyService $county_service) {
+        private CountyService $county_service,
+        private CityService $city_service,
+        private ZipCodeService $zip_code_service) {
     }
 
     public function transformDate($date)
@@ -66,39 +67,11 @@ class EmployeeImportService
         $county_dto = new CountyDTO($county_name, $region_id);
         $county_id = $this->county_service->firstOrCreate($county_dto)->id;
 
-        $city_id = $this->firstOrCreateCity($city_name, $county_id)->id;
+        $city_dto = new CityDTO($city_name, $county_id);
+        $city_id = $this->city_service->firstOrCreate($city_dto)->id;
 
-        return $this->firstOrCreateZipCode($zip_code, $city_id);
+        $zip_code_dto = new ZipCodeDTO($zip_code, $city_id);
+        return $this->zip_code_service->firstOrCreate($zip_code_dto);
     }
 
-    public function firstOrCreateRegion($name): Region
-    {
-        return Region::firstOrCreate([
-            'name' => $name,
-        ])->fresh();
-    }
-
-    public function firstOrCreateCounty($name, $region_id): County
-    {
-        return County::firstOrCreate([
-            'name' => $name,
-            'region_id' => $region_id,
-        ])->fresh();
-    }
-
-    public function firstOrCreateCity($name, $county_id): City
-    {
-        return City::firstOrCreate([
-            'name' => $name,
-            'county_id' => $county_id,
-        ])->fresh();
-    }
-
-    public function firstOrCreateZipCode($code, $city_id): ZipCode
-    {
-        return ZipCode::firstOrCreate([
-            'code' => $code,
-            'city_id' => $city_id,
-        ])->fresh();
-    }
 }
