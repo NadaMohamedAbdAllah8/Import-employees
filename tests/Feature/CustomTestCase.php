@@ -1,16 +1,17 @@
 <?php
 
-namespace Tests;
+namespace Tests\Feature;
 
-use App\Constants\HttpHeader;
-use App\Models\Admin;
+use Illuminate\Foundation\Testing\DatabaseMigrations;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Support\Facades\Auth;
+use Tests\CreatesApplication;
+use Tests\TestCase;
 
 abstract class CustomTestCase extends TestCase
 {
     use CreatesApplication;
     use RefreshDatabase;
+    use DatabaseMigrations;
 
     public string $base_route;
 

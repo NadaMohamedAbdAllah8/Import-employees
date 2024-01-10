@@ -1,11 +1,11 @@
 <?php
 
-namespace Tests\Unit;
+namespace Tests\Feature;
 
 use App\Models\Admin;
 use App\Models\County;
 use App\Services\CountyService;
-use Tests\CustomTestCase;
+use Tests\Feature\CustomTestCase;
 
 class CountyTest extends CustomTestCase
 {
@@ -20,13 +20,7 @@ class CountyTest extends CustomTestCase
     public function test_store_successfully()
     {
         // arrange
-        $service_mock = $this->mock(CountyService::class);
-
         $county = County::factory()->make();
-
-        $service_mock->shouldReceive('createOne')
-            ->once()
-            ->andReturn($county);
 
         $admin = Admin::factory()->create();
 
@@ -34,6 +28,11 @@ class CountyTest extends CustomTestCase
             ->postJson($this->route, $county->toArray());
 
         // assert
+        $this->assertDatabaseHas(County::class, [
+            'name' => $county->name,
+            'region_id' => $county->region_id
+        ]);
+
         $response->assertCreated()
             ->assertJsonPath('item.name', $county->name)
             ->assertJsonPath('item.region.id', $county->region->id);
