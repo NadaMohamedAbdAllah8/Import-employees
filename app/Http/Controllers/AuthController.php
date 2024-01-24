@@ -20,6 +20,7 @@ class AuthController extends Controller
         $credentials = $request->only('email', 'password');
 
         $admin = $this->auth_service->login($credentials);
+
         $this->auth_service->createToken($admin);
 
         return $this->returnData(['admin' => new AdminResource($admin)], 'User Logged in Successfully');
