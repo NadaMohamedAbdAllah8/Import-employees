@@ -4,8 +4,6 @@ namespace Tests\Feature;
 
 use App\Models\Admin;
 use App\Models\County;
-use App\Services\CountyService;
-use Tests\Feature\CustomTestCase;
 
 class CountyTest extends CustomTestCase
 {
@@ -14,7 +12,7 @@ class CountyTest extends CustomTestCase
     public function setUp(): void
     {
         parent::setUp();
-        $this->route = $this->base_route . 'counties/';
+        $this->route = $this->base_route.'counties/';
     }
 
     public function test_store_county_successfully()
@@ -30,7 +28,7 @@ class CountyTest extends CustomTestCase
         // assert
         $this->assertDatabaseHas(County::class, [
             'name' => $county->name,
-            'region_id' => $county->region_id
+            'region_id' => $county->region_id,
         ]);
 
         $response->assertCreated()
@@ -41,20 +39,20 @@ class CountyTest extends CustomTestCase
     public function test_update_county_successfully()
     {
         // arrange
-        $old_county =  County::factory()->create();
+        $old_county = County::factory()->create();
 
         $county = County::factory()->make();
 
         $admin = Admin::factory()->create();
 
         $response = $this->actingAs($admin, 'api')
-            ->patchJson($this->route . $old_county->id, $county->toArray());
+            ->patchJson($this->route.$old_county->id, $county->toArray());
 
         // assert
         $this->assertDatabaseHas(County::class, [
             'id' => $old_county->id,
             'name' => $county->name,
-            'region_id' => $county->region_id
+            'region_id' => $county->region_id,
         ]);
 
         $response->assertSuccessful()
@@ -71,13 +69,13 @@ class CountyTest extends CustomTestCase
         $admin = Admin::factory()->create();
 
         $response = $this->actingAs($admin, 'api')
-            ->deleteJson($this->route . $county->id);
+            ->deleteJson($this->route.$county->id);
 
         // assert
         $this->assertDatabaseMissing(County::class, [
             'id' => $county->id,
             'name' => $county->name,
-            'region_id' => $county->region_id
+            'region_id' => $county->region_id,
         ]);
 
         $response->assertNoContent();
