@@ -1,10 +1,16 @@
 <?php
 
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\CityController;
+use App\Http\Controllers\CountyController;
 use App\Http\Controllers\EmployeeController;
+use App\Http\Controllers\PrefixController;
+use App\Http\Controllers\RegionController;
+use App\Http\Controllers\ZipCodeController;
 use Illuminate\Support\Facades\Route;
 
-Route::group(['namespace' => 'App\Http\Controllers'],
+Route::group(
+    ['namespace' => 'App\Http\Controllers'],
     function () {
         Route::post('login', [AuthController::class, 'login']);
 
@@ -24,4 +30,5 @@ Route::group(['namespace' => 'App\Http\Controllers'],
 
             Route::apiResource('/zip-codes', ZipCodeController::class);
         });
-    });
+    }
+);
