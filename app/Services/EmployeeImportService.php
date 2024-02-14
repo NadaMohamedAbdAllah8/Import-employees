@@ -15,11 +15,11 @@ use Throwable;
 
 class EmployeeImportService
 {
-
     public function __construct(private RegionService $region_service,
         private CountyService $county_service,
         private CityService $city_service,
-        private ZipCodeService $zip_code_service) {
+        private ZipCodeService $zip_code_service)
+    {
     }
 
     public function transformDate($date)
@@ -38,13 +38,13 @@ class EmployeeImportService
 
             return $date;
         } catch (Throwable $e) {
-            throw new ParsingException('Failed to parse date!, error message:' . $e->getMessage());
+            throw new ParsingException('Failed to parse date!, error message:'.$e->getMessage());
         }
     }
 
     public function transformTime($time)
     {
-        if (!is_string($time)) {
+        if (! is_string($time)) {
             $time = Date::excelToDateTimeObject($time)->format('H:i:s');
         } else {
             $time = DateTime::createFromFormat('g:i:s A', $time);
@@ -71,7 +71,7 @@ class EmployeeImportService
         $city_id = $this->city_service->firstOrCreate($city_dto)->id;
 
         $zip_code_dto = new ZipCodeDTO($zip_code, $city_id);
+
         return $this->zip_code_service->firstOrCreate($zip_code_dto);
     }
-
 }

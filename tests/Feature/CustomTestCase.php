@@ -10,8 +10,8 @@ use Tests\TestCase;
 abstract class CustomTestCase extends TestCase
 {
     use CreatesApplication;
-    use RefreshDatabase;
     use DatabaseMigrations;
+    use RefreshDatabase;
 
     public string $base_route;
 

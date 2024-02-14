@@ -2,9 +2,7 @@
 
 namespace Tests\Unit;
 
-use App\DataTransferObjects\County_dto;
 use App\DataTransferObjects\CountyDTO;
-use App\Models\Admin;
 use App\Models\County;
 use App\Services\CountyService;
 use Mockery;
@@ -13,7 +11,9 @@ use PHPUnit\Framework\TestCase;
 class CountyServiceTest extends TestCase
 {
     private string $county_name;
+
     private string $county_name_not_unique;
+
     private int $region_id;
 
     public function setUp(): void

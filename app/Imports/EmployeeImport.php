@@ -24,7 +24,8 @@ class EmployeeImport implements ShouldQueue, ToModel, WithBatchInserts, WithChun
     use SkipsErrors, SkipsFailures;
 
     public function __construct(private EmployeeImportService $import_service,
-        private PrefixService $prefix_service, ) {
+        private PrefixService $prefix_service, )
+    {
     }
 
     /**
@@ -77,7 +78,7 @@ class EmployeeImport implements ShouldQueue, ToModel, WithBatchInserts, WithChun
                 'zip_code_id' => $zip_code_id,
             ]);
         } catch (Throwable $e) {
-            Log::error('Error happened for ' . $emp_id . ' ,error: ' . $e->getMessage());
+            Log::error('Error happened for '.$emp_id.' ,error: '.$e->getMessage());
         }
     }
 

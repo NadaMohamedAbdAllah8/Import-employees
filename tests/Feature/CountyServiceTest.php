@@ -3,10 +3,8 @@
 namespace Tests\Feature;
 
 use App\DataTransferObjects\CountyDTO;
-use App\Models\Admin;
 use App\Models\County;
 use App\Services\CountyService;
-use Tests\Feature\CustomTestCase;
 
 class CountyServiceTest extends CustomTestCase
 {
