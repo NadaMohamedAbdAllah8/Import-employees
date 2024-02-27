@@ -26,10 +26,10 @@ class PrefixController extends Controller
     public function index(Request $request): JsonResponse
     {
         $paginate = $request->paginate ?? 10;
-        $prefixs = $this->prefix_service->getMany($paginate);
+        $prefixes = $this->prefix_service->getMany($paginate);
 
         return $this->returnDataWithPaginate(
-            $prefixs,
+            $prefixes,
             'Prefixes list',
             PrefixResource::class
         );

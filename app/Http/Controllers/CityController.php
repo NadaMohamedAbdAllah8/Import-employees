@@ -30,7 +30,7 @@ class CityController extends Controller
 
         return $this->returnDataWithPaginate(
             $cities,
-            'Counties list',
+            'Cities list',
             CityResource::class
         );
     }
@@ -47,7 +47,6 @@ class CityController extends Controller
             new CityResource($city),
             'Saved successfully'
         );
-
     }
 
     /**
