@@ -25,7 +25,7 @@ class CountyServiceTest extends TestCase
         $this->region_id = 1;
     }
 
-    public function test_create_one_successfully()
+    public function test_create_county_successfully()
     {
         // arrange
         $service_mock = Mockery::mock(CountyService::class);
@@ -41,5 +41,39 @@ class CountyServiceTest extends TestCase
 
         // assert
         $this->assertInstanceOf(County::class, $result);
+    }
+
+    public function test_update_county_successfully()
+    {
+        // arrange
+        $service_mock = Mockery::mock(CountyService::class);
+
+        $county_dto = new CountyDTO($this->county_name, $this->region_id);
+
+        $service_mock->shouldReceive('updateOne')
+            ->once()
+            ->andReturn(new County());
+
+        // act
+        $result = $service_mock->updateOne($county_dto, new County());
+
+        // assert
+        $this->assertInstanceOf(County::class, $result);
+    }
+
+    public function test_delete_county_successfully()
+    {
+        // arrange
+        $service_mock = Mockery::mock(CountyService::class);
+
+        $service_mock->shouldReceive('deleteOne')
+            ->once()
+            ->andReturn(true);
+
+        // act
+        $result = $service_mock->deleteOne(new County());
+
+        // assert
+        $this->assertTrue($result);
     }
 }
