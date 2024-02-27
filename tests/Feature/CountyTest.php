@@ -36,6 +36,25 @@ class CountyTest extends CustomTestCase
             ->assertJsonPath('item.region.id', $county->region->id);
     }
 
+    public function test_store_county_with_repeated_name_and_region_unsuccessfully()
+    {
+        // arrange
+        $old_county = County::factory()->create();
+
+        $new_county = County::factory()->make([
+            'name' => $old_county->name,
+            'region_id' => $old_county->region_id,
+        ]);
+
+        $admin = Admin::factory()->create();
+
+        $response = $this->actingAs($admin, 'api')
+            ->postJson($this->route, $new_county->toArray());
+
+        // assert
+        $response->assertUnprocessable();
+    }
+
     public function test_update_county_successfully()
     {
         // arrange
@@ -59,6 +78,25 @@ class CountyTest extends CustomTestCase
             ->assertJsonPath('item.id', $old_county->id)
             ->assertJsonPath('item.name', $county->name)
             ->assertJsonPath('item.region.id', $county->region->id);
+    }
+
+    public function test_update_county_with_repeated_name_and_region_unsuccessfully()
+    {
+        // arrange
+        $old_county = County::factory()->create();
+
+        $new_county = County::factory()->make([
+            'name' => $old_county->name,
+            'region_id' => $old_county->region_id,
+        ]);
+
+        $admin = Admin::factory()->create();
+
+        $response = $this->actingAs($admin, 'api')
+            ->patchJson($this->route.$old_county->id, $new_county->toArray());
+
+        // assert
+        $response->assertUnprocessable();
     }
 
     public function test_delete_county_successfully()
