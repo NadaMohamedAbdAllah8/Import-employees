@@ -25,10 +25,14 @@ class UpdateRequest extends FormRequest
     public function rules()
     {
         return [
-            'name' => ['nullable', 'string', 'min:2',
-                Rule::unique('counties', 'name')->ignore($this->id)],
-            'county_id' => ['nullable', 'integer', 'exists:counties,id',
-                Rule::unique('cities', 'county_id')->ignore($this->county_id)],
+            'name' => [
+                'nullable', 'string', 'min:2',
+                Rule::unique('cities', 'name')->ignore($this->id),
+            ],
+            'county_id' => [
+                'nullable', 'integer', 'exists:counties,id',
+                Rule::unique('cities', 'county_id')->ignore($this->county_id),
+            ],
         ];
     }
 }
